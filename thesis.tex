@@ -16,7 +16,7 @@
 %% Used for TODO items
 \usepackage{color}
 %% used for code listings.
-\usepackage{float}
+\usepackage{float} 
 %% Used to replace LaTeX's ugly emptyset with diameter, which looks nicer.
 \usepackage{wasysym}
 %% Nicely formatted algorithms.
@@ -105,7 +105,6 @@ Williamstown, Massachusetts\\
 \listoftables
 \onehalfspacing
 \chapter*{Abstract}
-Instead of leaving this blank, here is an abstract for an upcoming presentation at the American Geophysical Union of the work that motivated this chapter:
 
 The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R series satellites collect continuous, high-quality imagery of the Sun in six wavelengths. SUVI imagers produce at least one image every 10 seconds, or 8,640 images per day, considerably more data than observers can digest in real time. Over the projected 20-year lifetime of the four GOES-R series spacecraft, SUVI will provide critical imagery for space weather forecasters and produce an extensive but unwieldy archive. In order to condense the database into a dynamic and searchable form we have developed solar thematic maps, maps of the Sun with key features, such as coronal holes, flares, bright regions, quiet corona, and filaments, identified. Thematic maps will be used in NOAA’s Space Weather Prediction Center to improve forecaster response time to solar events and generate several derivative products. Likewise, scientists use thematic maps to find observations of interest more easily.
 
@@ -118,7 +117,37 @@ I'd like to thank Dan Seaton and Jon Darnel for guiding me during my summer work
 
 \chapter{Introduction}
 \section{Motivation}
-The Sun is ever-changing and impacts Earth in many ways every day. Earth is situated inside the Sun's tremendous magnetic field. Features on the Sun evolve and expose Earth to new environmental conditions. The interaction between the Sun's magnetic field and Earth is called space weather. Even though space weather manifests itself in many different way, it ultimately stems from the Sun. Table \ref{tab:solarfeatures} details some different types of solar features, many of which can lead to space weather events while others are indicative of a calm, quiet Sun.
+From August 28th to September 5th 1859, the night sky nearly all over the world blazed with auroral displays for hours. Sources reported, “there was another display of the Aurora last night so brilliant that at about one o’clock ordinary print could be read by light” (The New York Times, New York Herald, Washington Daily National Intelligencer, September 2, 3, 5, 1859) \cite{green:2006}. Normally, aurora, a visible manifestation between material streaming in from the Sun and Earth's magnetic field, are confined to polar regions. However, there were observations in New Orleans and even as far south as Honolulu, shown in Figure \ref{fig:carrington-spatial}  \cite{cliver:2004}. Telegraphs ceased to work and with reported injuries to human operators \cite{green:2006}. Carrington-like events, while rare, are not unique, with a 12\% probability of another within the decade \cite{riley:2012}. 
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=1]{carrington-spatial.png}
+    \caption{{\bf Spatial extent of Carrington Event}: As noted by Cliver and Svalgaard (2004) the Carrington event was observed to very low latitudes in the Americas. Closed circles represent overhead aurora; open circles represent visible aurora. The heavy curved line denotes the geomagnetic equator and the $\bigoplus$ symbol indicates the anti-Sun point. The lowest geomagnetic latitude at which the storm was observed was Honolulu (not shown).}
+    \label{fig:carrington-spatial}
+ \end{center}
+\end{figure}
+
+A much smaller event occurred in 2003, known now as the Halloween event \cite{muller:2014, viljanen:2014}. In preparation, satellites were placed into a stable stand-by mode. Ultimately, only one satellite was damaged with most satellites unscathed and exceeding their nominal lifespan. An extreme Carrington event was observed pointed away from Earth in 2012 \cite{eastwood:2017}. It is difficult to quantify the total cost; estimates of the damage a modern Carrington event would cause range from \$140 billion to \$3.4 trillion \cite{eastwood:2017}.
+
+There are many much more frequent but less devastating solar events, discussed in Section \ref{sec:space-weather-events} that can cause damage to power grids, satellites, Earth communications,  astronauts, and many other sensitive systems. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. While they cannot be prevented, advanced warning allows for preparation that can mitigate the damage. This thesis explores solar feature classification through modern machine learning approaches, specifically the creation of a computer vision systems utilizing satellite imagery to identify solar activity in real time for quick response.
+
+\section{Goals}
+
+This thesis has several key goals as outlined here:
+\begin{itemize}
+\item There does not exist a curated database of human labeled solar images. This thesis will present the first of its kind, comparing it to existing automated databases. In addition, this thesis will analyze the human labeling to understand agreement/disagreement between different labelers and consistency for each libeler. In order to create this database, the necessary labeling software will be provided.
+\item This thesis will provide a suite modern machine learning approaches to solar image classification with a random forest, Bayesian, and neural network implementation. These will be compared to existing solar classification approaches as well as each other to characterize their strengths, weaknesses, and overall performance.
+\item Ultimately, high-quality solar image classification opens up avenues of research for solar physics. Thus, a prototype solar feature database will compiled from the images, indexing the images and allowing solar physicists to easily find interesting events. Further, a research application estimating the fractal dimension of active regions and properties of coronal hole will be presented.
+\end{itemize}
+
+\section{Organization}
+
+\chapter{Background}
+
+\section{Solar Physics}
+
+Space weather has dangerous and expensive consequences including harm to astronauts and satellites, destruction of power grids, and routine rerouting of intercontinental flights over the north pole. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. It is critical to have early warning of such events to enact proper protections. The new Solar Ultraviolet Imager (SUVI), a camera aboard the National Oceanic and Atmospheric Administration's (NOAA) GOES-R weather satellite, responds to this need as it captures an image of the Sun every 10 seconds \cite{suvibg}. This flood of data cannot be digested by human forecasters quick enough, necessitating machine learning image classification to identify important events. Machine learning also allows for organized archival of the projected 20 years of imaging, allowing researchers to find relevant data to test new solar models. This is an interesting supervised machine learning problem because it operates on movies of multi-spectral, noisy images. SUVI by no means is the first satellite to explore this problem. This paper explores existing approaches to the astronomical problem as well as looking at parallel solutions in Earth remote sensing applications. Finally, it explores state-of-the-art computer vision research and new approaches to image segmentation and classification.
+
 
 \begin{table}[h!]
 \centering
@@ -140,8 +169,24 @@ The Sun is ever-changing and impacts Earth in many ways every day. Earth is situ
  \label{tab:solarfeatures}
 \end{table}
 
-Space weather has dangerous and expensive consequences including harm to astronauts and satellites, destruction of power grids, and routine rerouting of intercontinental flights over the north pole. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. It is critical to have early warning of such events to enact proper protections. The new Solar Ultraviolet Imager (SUVI), a camera aboard the National Oceanic and Atmospheric Administration's (NOAA) GOES-R weather satellite, responds to this need as it captures an image of the Sun every 10 seconds \cite{suvibg}. This flood of data cannot be digested by human forecasters quick enough, necessitating machine learning image classification to identify important events. Machine learning also allows for organized archival of the projected 20 years of imaging, allowing researchers to find relevant data to test new solar models. This is an interesting supervised machine learning problem because it operates on movies of multi-spectral, noisy images. SUVI by no means is the first satellite to explore this problem. This paper explores existing approaches to the astronomical problem as well as looking at parallel solutions in Earth remote sensing applications. Finally, it explores state-of-the-art computer vision research and new approaches to image segmentation and classification.
 
+Earth is situated inside the Sun's tremendous magnetic field. Features on the Sun evolve and expose Earth to new environmental conditions. The interaction between the Sun's magnetic field and Earth is called space weather.
+
+\subsection{Solar Structures}
+
+\subsection{Space Weather Phenomenon} \label{sec:space-weather-events}
+
+\subsection{Space Weather Mitigation}
+
+\section{Machine Learning}
+
+\subsection{Machine Learning Experiment Design}
+
+\subsection{Classifiers}
+
+\subsection{Computer Vision}
+
+\chapter{Related work}
 \section{Synoptic Charts and Thematic Maps}
 When classifying space weather phenomena, it is important to understand its context: where it is on the solar disk, when it developed, and its strength. The Sun has a consistent radial outflow of material at approximately 400 km/s as it rotates on its axis every 25 days. This results in magentic field lines in a spiral pattern called the ``Parker Spiral.'' As such, an ejection of material from the Sun on the eastern side of the Sun will reach Earth quicker than an ejection from the western side of the Sun.  Thus, knowing the both the location of the event and the time of the event is very important when considering when the impacts will be felt on Earth. A detailed understanding of the strength of the event and exigent conditions is required to estimate the impact on Earth when it does arrive.
 
@@ -348,43 +393,107 @@ The Mask R-CNN design was tested in several domains: cityscapes, human pose esti
 \section{Summary}
 Solar image segmentation is well motivated by space weather and archival concerns. Up until now, there have been numerous unsupervised approaches, too many to completely document in this paper. These approaches employ a variety of computer vision techniques but are often limited to only determining membership in one class, e.g. determining which pixels are filament. They can be used in tandem to create solar thematic maps that label all classes on the Sun in an ensemble classifier. Settling disputes between the independent classifiers can be difficult and running them all in parallel can be costly. Instead, machine learning techniques can be applied to label the entire image at one time. A few supervised approaches have been developed and perform well. However, there is limited quantification and even more limited consistent quantification of that performance making it difficult to compare systems. By looking to Earth remote sensing and state-of-the-art computer vision machine learning approaches, solar image segmentation can be advanced in a systematic and measurable fashion. 
 
-\chapter{Introduction}
-
-\section{Motivation}
-
-\section{Goals}
-
-\section{Organization}
-
-
-
-\chapter{Background}
-
-\section{Solar Physics}
-
-\subsection{Solar Structures}
-
-\subsection{Space Weather Phenomenon}
-
-\subsection{Space Weather Mitigation}
-
-\section{Machine Learning}
-
-\subsection{Machine Learning Experiment Design}
-
-\subsection{Classifiers}
-
-\subsection{Computer Vision}
-
-
-\chapter{Related work}
-
 \chapter{Data}
 
 \section{Solar Imagery}
 
 \section{Labeled Imagery}
-  
+Since this study is using supervised machine learning, labeled images of the Sun are needed. There does not exist a verified sample of human labeled solar events for more than one category of event. The closest system is the Heliophysics Event Knowledgebase (HEK) \cite{hurlburt:2012} which combines data mining and computer vision with data visualization techniques to create a database of labeled events. These are sometimes verified by humans but can be problematic, especially with multiple entries per event to sift through. Each event is given one of their designated labels as shown in Table \ref{tab:heklabels}.  
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{||p{4cm} p{10cm}||}
+    \hline
+    Event Class & Description \\
+    Active Region & Solar Active Region\\
+    Coronal Mass Ejection & Ejection of material from the solar corona \\
+    Coronal Dimming & A large-scale reduction in EUV emission \\
+    Coronal Jet & A jet-like object observed in the low corona \\
+    Coronal Wave & EIT or Morton waves spanning a large fraction of the solar disk \\
+    Emerging Flux & Regions of new magnetic flux in the solar photosphere \\
+    Filament & Solar Filament or Prominence \\
+    Filament Eruption & A sudden launching of a filament into the corona  \\
+    Filament Activation & A sudden change in a filament without launching \\
+    Flare & Solar Flare \\
+    Loop & Magnetic loops typically traced out using coronal imagery \\
+    Oscillation &  A region with oscillating coronal field lines \\
+    Sigmoid & S-shaped regions seen in soft X rays; indicator for flares \\
+    Spray & Surge Sudden or sustained intrusion of chromospheric material well into the corona \\
+    Sunspot & Sunspots on the solar disk \\
+    Plage &  Bright areas associated with active regions\\
+    Other & Something that could not be classified – good candidate for further research \\
+    Nothing & Reported Used to indicate that the particular data were examined, but had nothing noteworthy to the observer \\
+    \hline             
+  \end{tabular}
+  \caption{List of event labels for HEK \cite{hurlburt:2012}.}
+  \label{tab:heklabels}
+\end{table}
+
+For this project, a small curated set of solar events was produced using three solar physics experts. They used an abbreviated set of solar event categories as detailed in Table \ref{tab:mylabels}.  
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{||p{4cm} p{10cm}||}
+    \hline
+    Event Class & Description \\
+    Bright Region & Solar Active Region\\
+    Coronal Hole & Dimmer region in EUV where magnetic field lines are open\\
+    Filament & Solar Filament \\
+    Flare & Solar Flare \\
+    Prominence & Solar prominence \\
+    Limb & Edge of solar disk in EUV \\
+    Structured outer space & region off the disk with structure \\
+    Unstructured outer space & region off the disk with no structure \\
+    Unlabeled & region where no label was given or confidence was especially low \\
+    Quiet Sun & region on disk with no particularly interesting structures \\
+    \hline             
+  \end{tabular}
+  \caption{List of event labels for curated data gathered in this study.}
+  \label{tab:mylabels}
+\end{table}
+
+Twenty-seven image groupings of the SUVI six-band imagery were used for the labeled data as shown in Table \ref{tab:labelingtimes}. Each group consists of one image from each SUVI band, an h-alpha image, and any needed derived images used as features in the machine learning.
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c c c c|}
+    \hline
+    Group Number & Date & Time & Span of time (seconds) \\
+    \hline
+    0 & 2017-04-01 & 00:02:19 & 123 \\
+    1 & 2017-04-15 & 00:01:49 & 150 \\
+    2 & 2017-05-15 & 00:01:20 & 220 \\
+    3 & 2017-05-20 & 00:02:07 & 121 \\
+    4 & 2017-06-01 & 00:03:09 & 210 \\
+    5 & 2017-06-15 & 00:02:57 & 120 \\
+    6 & 2017-06-19 & 06:02:09 & 220 \\
+    7 & 2017-07-01 & 00:02:18 & 120 \\
+    8 & 2017-07-15 & 00:02:07 & 120 \\
+    9 & 2017-07-28 & 05:02:17 & 122 \\
+    10 & 2017-08-01 & 00:02:36 & 120 \\
+    11 & 2017-08-20 & 00:01:07 & 160 \\
+    12 & 2017-09-01 & 00:01:59 & 150 \\
+    13 & 2017-09-08 & 00:01:58 & 180 \\
+    14 & 2017-09-15 & 00:02:31 & 130 \\
+    15 & 2017-10-01 & 12:01:56 & 150 \\
+    16 & 2017-10-15 & 00:02:02 & 200 \\
+    17 & 2017-11-02 & 00:02:07 & 210 \\
+    18 & 2017-11-15 & 00:01:47 & 190 \\
+    19 & 2017-11-30 & 00:01:51 & 150 \\
+    20 & 2017-12-15 & 00:02:31 & 220 \\
+    21 & 2018-01-01 & 00:03:04 & 210 \\
+    22 & 2018-01-15 & 00:02:57 & 130 \\
+    23 & 2018-02-01 & 00:02:54 & 200 \\
+    24 & 2018-02-15 & 00:01:35 & 180 \\
+    25 & 2018-03-01 & 00:01:57 & 220 \\
+    26 & 2018-03-03 & 00:02:15 & 200 \\
+    \hline
+  \end{tabular}
+  \caption{Times for images used in the labeling image set with the number of seconds between the first and last image in the grouping. }
+  \label{tab:labelingtimes}
+\end{table}
+
+\subsection{Analysis of labeled data}
 
 \chapter{Classifiers}
 
@@ -398,6 +507,8 @@ Solar image segmentation is well motivated by space weather and archival concern
 
 \chapter{Experiments and Results}
 
+\section{Labeled imagery analysis}
+
 \section{Evaluation approaches}
 
 \subsection{Standard machine learning metrics}
@@ -407,12 +518,27 @@ Solar image segmentation is well motivated by space weather and archival concern
 \section{Data noise levels}
 
 \subsection{Noise-gater procedures}
+Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot noise that degrades the signal quality. This buries the signal and could potentially make it more difficult for the machine learning classifiers to cleanly identify the solar classes. Deforest (2017) proposed a method using localized Fourier transforms to characterize and remove the noise from images with specific application to extreme ultraviolet images. The effectiveness of noise-gating is shown in Figure \ref{fig:noise-gate-example}.
+
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=1]{noise-gate.png}
+    \caption{{\bf Effectiveness of noise-gating} The upper left is a good image, no cleaning necessary. However, images like the upper right, dominated by shot noise, are typical for the 94 angstrom channel. This image is created by taking the image on the upper left and adding Poisson noise with a signal-to-noise ratio of 2. The algorithm still performs even if it's worse, although some artifacts appear. DeForest's algorithm was applied to create the cleaned image on the bottom left. This can be compared to simply smoothing the image to decrease the noise as in the bottom right, a typical alternative procedure.}
+    \label{fig:noise-gate-example}
+ \end{center}
+\end{figure}
 
 \section{Normalization of data}
 
 \section{Spatial features}
 
 \section{HALPHA inclusion}
+
+\chapter{Applications}
+\section{Database building}
+
+\section{Fractal dimension and class properties}
 
 \chapter{Conclusion}
 
