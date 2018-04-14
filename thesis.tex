@@ -56,7 +56,7 @@
 %            {geometry}
 \usepackage{xargs}
 
-\newcommand{\halpha}{H$\alpha$}
+\newcommand{\halpha}{H$\alpha$\,}
 \newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
 
 %\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
@@ -427,7 +427,17 @@ One image, in a single passband, is taken every 10 seconds. The observation sequ
 \todo{this is all from suvibg2 but how many times should I cite?}
 
 \subsection*{\halpha imagery} 
-As discussed in Section \ref{sec:halphainclusion}
+As discussed in Section \ref{sec:halphainclusion}, it was impossible to differentiate between all labeled classes using only ultraviolet imagery. Thus, \halpha images were included. These images were gathered using the Virtual Solar Observatory \cite{vso}, an online compilation of images of the Sun from various sources, using SunPy \cite{sunpy, sunpyweb}, a Python toolkit for solar physics. In particular, \halpha images from the Global Oscillation Network Group (GONG) were used since they have continuous time coverage because of their seven globally distributed observing sites in Learmonth, Australia; Udaipur, India; El Teide, Spain; Cerro Tololo, Chile; Tuscon, Arizona, United States; Big Bear, California, United States; and Mauna Loa, Hawaii, United States. Each image is 2048x2048 pixels with each pixel being one arcsecond on a side. These are rescaled to SUVI using a linear transformation. \todo{insert linear transformation}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.1]{example-halpha.jpg}
+    \caption{{\bf Example \halpha image}: This image corresponds to the \halpha view at the same time as SUVI's first light in Figure \ref{fig:suviimages}.}
+    \label{fig:halphaimage}
+ \end{center}
+\end{figure}
+
+\todo{make the same time as suvi's example}.
 
 \section{Labeled Imagery} \label{sec:labeling}
 Since this study is using supervised machine learning, labeled images of the Sun are needed. There does not exist a verified sample of human labeled solar events for more than one category of event. The closest system is the Heliophysics Event Knowledgebase (HEK) \cite{hurlburt:2012} which combines data mining and computer vision with data visualization techniques to create a database of labeled events. These are sometimes verified by humans but can be problematic, especially with multiple entries per event to sift through. Each event is given one of their designated labels as shown in Table \ref{tab:heklabels}.  
@@ -484,7 +494,7 @@ For this project, a small curated set of solar events was produced using three s
   \label{tab:mylabels}
 \end{table}
 
-Twenty-seven image groupings of the SUVI six-band imagery were used for the labeled data as shown in Table \ref{tab:labelingtimes}. Each group consists of one image from each SUVI band, an \halpha image, and any needed derived images used as features in the machine learning.
+Twenty-seven image groupings of the SUVI six-band imagery were used for the labeled data as shown in Table \ref{tab:labelingtimes}. Each group consists of one image from each SUVI band, an \halpha image, and any needed derived images used as features in the machine learning. These images were selected because they were spread over the entirety of SUVI's operational lifetime and capture a variety of solar phenomena. 
 
 \begin{table}[ht!]
   \centering
@@ -525,7 +535,53 @@ Twenty-seven image groupings of the SUVI six-band imagery were used for the labe
   \label{tab:labelingtimes}
 \end{table}
 
+\subsection{Annotating Software}
+In general, a solar annotation tool requires the following features:
+\begin{itemize}
+\item automatic solar coordinate alignment 
+\item an interface to select a labeling class
+\item utility to indicate which pixels should be labeled
+\item ability to edit already annotated images
+\item navigation tools to move throughout the image
+\end{itemize}
+
+To aid annotators, the author created a very simple annotation tool in Tkinter that met these requirements and more. This tool is very much a work in progress and has iteratively been improved based on user feedback. There are currently plans to move the annotation tool into a web interface to avoid a cumbersome install process. (This is a response to users having problems installing necessary dependencies because of the wide variety of machine operating systems and environments.) 
+
+A user of the tool must first configure a reference database. A reference database is an HDF5 file that coordinates the image paths and groups. This database contains meta-data about when the database was compiled, what channels it includes, and the master path to the images. Its main purpose is to coordinate image groupings. For every image grouping, there is an entry which contains a name and paths to each passband image. This structuring allows users to classify based on a shared data repository instead of having individual copies. The database can automatically be generated from a directory containing SUVI images with a provided script. In the case of this thesis, the reference database and passband images were compiled and given to the users to minimize their work. 
+
+With this database set up, the annotator calls the software from the commandline by specifying where the reference database is located and where to save labeled images. To make this easier, the users were given a parameterless version of this call which was configured to run based on the zipped reference database and images given to them. 
+
+Upon startup, the software will look at its configuration file and determine how many times each image should be classified. As discussed in Section \ref{sec:consistency}, each annotator was asked to label every group twice to determine how consistent they were. If there are still images left to label, the software loads one using the reference database. Using meta-data in the images, it solves for where the Sun should be located in each image. It is configured with an option to automatically classify the entire disk of the Sun as quiet Sun, the limb of the Sun, and everything else as unstructured outer space. The location of these classes is known and do not need classification. The annotator can then draw on top of these labels by dragging their mouse. A lasso tool is used to determine the region enclosed by their drawing and given their selected label.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.25]{labeling-initial}
+    \caption{{\bf Startup of annotation software:} The region on the left shows a preview image of the Sun. Initially, it is configured to show a three-color composite of the Sun, with channels scaled to show most features. The right region shows the labeling of the Sun.}
+    \label{fig:label-initial}
+ \end{center}
+\end{figure}
+
+In a single static image, it is difficult to label all the features because they are on different spatial, brightness, and spectral scales. Pan and zoom tools were included to allow the user to easily navigate about an image. In the configure panel, the annotator can adjust the left, preview solar image. They can choose to either see an RGB image that combines three different passbands or look at a single passband in a greyscale image. If they select the RGB they can assign the colors to their desired passband as well as what scaling factor to use. The scaling factor is included because the brightness values between different passbands differ. Without the adjustable scaling factor, the brightest passband will always dominate and more subtle detail cannot be seen. A single color option is included because some features may only be definitively visible in one passband, e.g. filaments in \halpha. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.25]{labeling-mid}
+    \caption{{\bf View during labeling with annotation software:} As an annotater progresses, they can utilize the various zoom, pan, reset (home) zoom, back one nagigational level, and forward one navigational level to aid their labeling. The annotator can change to the classify tab and select which feature they would like to draw directly on the Sun. Here, the 30.4 nm passband is being displayed.}
+    \label{fig:label-mid}
+ \end{center}
+\end{figure}
+
+\subsubsection{Iterated improvements}
+While this software is not complicated, it was not the first approach. In the very first approach, the image was automatically segmented into super-pixels using the Simple Linear Iterative Clustering (SLIC) segmentation algorithm \cite{SLIC}. Drawing boundaries is more time consuming than simply clicking an region of the image. SLIC was used in the hopes of producing more labeled images. However, it systematically over/under segmented specific classes, making their boundaries consistently too large or small, and did not consistently segment filaments. It instead lumped the structure into a larger superpixel with other classifications. 
+
+This approach would render the annotated database full of biases that would be difficult to correct. Effectively, the machine learning approaches used here would approximate the segmentation algorithm instead a gold-standard human definition. Thus, SLIC was abandoned and annotators denoted boundaries with a set of points that were individually clicked. Eventually, the current drawing approach was reached. It most effectively simulates the act of hand-drawing labeled maps by space weather forecasters used at NOAA today. 
+
 \subsection{Analysis of labeled data}
+Since this is the first digitally collected dataset of human solar annotations for multiple classes, it brings the opportunity to establish baseline metrics for human performance on the task of solar image segmentation. 
+
+\subsubsection{Self-consistency of annotators} \label{sec:consistency}
+
+\subsubsection{Agreement among annotators} \label{sec:agreement}
 
 \chapter{Classifiers} \label{ch:classifiers}
 
@@ -538,8 +594,6 @@ Twenty-seven image groupings of the SUVI six-band imagery were used for the labe
 \section{Convolutional Neural Network}
 
 \chapter{Experiments and Results} \label{ch:experiments}
-
-\section{Labeled imagery analysis}
 
 \section{Evaluation approaches}
 
@@ -566,6 +620,8 @@ Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot
 \section{Spatial features}
 
 \section{\halpha inclusion}\label{sec:halphainclusion}
+
+\section{Comparison to existing classifiers}
 
 \chapter{Applications} \label{ch:application}
 
