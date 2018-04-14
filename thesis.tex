@@ -54,13 +54,17 @@
 %             textheight=692pt,
 %             footskip=50pt]
 %            {geometry}
-\usepackage{xargs}     
-\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
-\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
-\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
-\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
-\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
-\newcommandx{\noshow}[2][1=]{\todo[disable,#1]{#2}}
+\usepackage{xargs}
+
+\newcommand{\halpha}{H$\alpha$}
+\newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
+
+%\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+%\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+%\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+%\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+%\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+%\newcommandx{\noshow}[2][1=]{\todo[disable,#1]{#2}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Thesis body %%
@@ -210,15 +214,6 @@ At the moment, reliable synoptic charts used in forecasting are predominantly hu
 \section{Data sources}
 \subsection{Raw imagery to classify} 
 For solar image classification many types and sources of images can be utilized. While brand new imagers like the Solar Ultraviolet Imager (SUVI) do not yet have public data repositories, Sunpy, a python package for solar physics, provides an interface for the Virtual Solar Observatory's large database of solar images \cite{sunpy}. Unsupervised approaches to the problem use this tool and others like it to fetch H$\alpha$, ultraviolet, x-ray, white light, magnetic, and other forms of solar images. They utilize from the Solar Dynamics Observatory, the Solar and Heliospheric Observatory, Solar Terrestrial Relations Observatory, Transition Region And Coronal Explorer, the Global Oscillation Network Group, and many other sources. There is continuous imagery of the Sun at many wavelengths and heights; raw data is generally not a limitation. Instead, the limitation is incorporating raw imagery into a classifier or obtaining labeled data for a supervised trainer. 
-
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.25]{suvi-wavelength-log.jpg}
-    \caption{{\bf Wavelengths}: This diagram indicates which SUVI wavelengths are most helpful in identifying different space weather events \cite{suvibg}.}
-    \label{fig:suviwavelength}
- \end{center}
-\end{figure}
-
 
 \subsection{Labeled data for training} 
 The supervised techniques discussed in Section \ref{sec:supervised} require labeled data to train their classifiers. A research group formerly at Montana State University and now at Georgia State University has collated large amounts of images with labeling from unsupervised classifiers. The original dataset in 2013 comprised over 15,000 images with 24,000 events observed in the first half of 2012 by the Solar Dynamics Observatory (SDO). Using the SDO unsupervised classifiers, small grid regions of the image were labeled active region, coronal hole, filament, flare, sigmoid, and sunspot. Each grid region is also statistically analyzed and assigned an entropy, mean, standard deviation, fractal dimension, skewness, kurtosis, uniformity, relative smoothness, contrast, and directionality measures \cite{schuh:2013}. This data was later incorporated into a database tool that allows the user to identify an example image and query the full dataset for similar events \cite{banda:2014}. This dataset and tool was later expanded to the full SDO observing database \cite{schuh:2016}. 
@@ -403,6 +398,36 @@ Solar image segmentation is well motivated by space weather and archival concern
 This chapter first describes the raw solar data utilized in this work. It then details the processing done to use the images in the project. Finally, it describes the annotation process for the images and analyzes the results. 
 
 \section{Solar Imagery}
+Ultraviolet observations of the Sun are optimal for seeing both dynamic, high temperature solar eruptions and cooler, more stable coronal holes. There are a few ultraviolet solar imagers: the Atmospheric Imaging Assembly (AIA) aboard the \textit{Solar Dynamics Observatory} (SDO) spacecraft \cite{lemen:2012}, the Extreme-ultraviolet Imaging telescope aboard the \textit{Solar and Heliospheric Observatory} (SOHO) spacecraft \cite{eit}, and the Sun Watcher with Active Pixels and Image Processing (SWAP) aboard the \textit{Project for On-Board Autonomy 2} spacecraft \cite{halain:2013, seaton:2013}. This project instead uses data from the new Solar Ultraviolet Imager (SUVI) aboard the \textit{ Geostationary Operational Environmental Satellite 16} (GOES-16) operated by the United States National Oceanic and Atmospheric Administration (NOAA) \cite{suvibg, suvibg2}. SDO, SOHO, and SUVI share many of the same wavelength passbands, but SUVI has a wider field of view allowing for classification of events further off the Sun. SWAP has the same field of view as SUVI but only one passband that SUVI also has. SUVI has a slightly higher spatial resolution than SWAP. In addition, GOES-16 is the first four commissioned satellites in the t-R series, all of which will have SUVI instruments. Thus, the classification system and database built here will be used for at least 20 years. The classification techniques applied here could be applied, with modification, to any of the aforementioned satellites, including to archived data. 
+
+\subsection{Solar Ultraviolet Imager (SUVI) Data}
+SUVI observes in six different wavelength passbands (and their corresponding coronal EUV emission line) using filters and multilayer mirrors sensitive to specfic wavelengths: 9.4 nm (Fe XVIII), 13.1 nm (Fe XXI), 17.1 nm (Fe IX/X), 19.5 nm, (Fe XII), 28.4 nm (Fe XV), and 30.4 nm (He II) Each wavelength is most sensitive to a specific wavelength and solar feature as detailed in Figure \ref{fig:suviwavelength}. This is qualitatively apparent in the first-light images from SUVi in Figure \ref{fig:suviimages}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.4]{suvi-wavelength-log.jpg}
+    \caption{{\bf Wavelengths}: This diagram indicates which SUVI wavelengths are most helpful in identifying different space weather events \cite{suviwebsite}.}
+    \label{fig:suviwavelength}
+ \end{center}
+\end{figure}
+
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{suvi-images.jpg}
+    \caption{{\bf Example SUVI images}: These first-light images taken on January 29, 2017 exemplify SUVI's response to different solar features in different passbands. For example, the large coronal hole (the darker boot-like shape in the lower portion of the Sun) has higher contrast from the background in 19.5 nm than 304 nm \cite{suviwebsite}.}
+    \label{fig:suviimages}
+ \end{center}
+\end{figure}
+
+
+Each image is composed of 1280x1280 14-bit pixels. The individual pixels are 2.5x2.5 arcseconds on a side resulting in a 53.3 arcminute total field of view horizontally \cite{suvibg2}. The field of view is slightly larger along the diagonal but vignetting in some of the image corners in some passbands renders these regions unusable. Ultimately, SUVI can observe out to 1.6-2.3 solar radii (depending whether on the horizontal or diagonal). 
+
+One image, in a single passband, is taken every 10 seconds. The observation sequence insures that every passband is observed at least once every four minutes. In addition, SUVI captures a short exposure time and a long exposure time image in each passband. During energetic and bright events like flares, the detector would saturate at the longer exposure time needed for high contrast images during times without energetic events. These two exposure times are combined to create high-dynamic-range composite images, which a two to three orders of magnitude increased dyanmic range than a single exposure time. In addition, SUVI has anti-blooming circuitry so that saturation in the long exposure image does not deteriorate quality in the composite image. This compositing will allow more classification of very bright active regions and flares than if another data set were used. Finally, the composite images are aligned so that the Sun is centered in each. 
+\todo{this is all from suvibg2 but how many times should I cite?}
+
+\subsection*{\halpha imagery} 
+As discussed in Section \ref{sec:halphainclusion}
 
 \section{Labeled Imagery} \label{sec:labeling}
 Since this study is using supervised machine learning, labeled images of the Sun are needed. There does not exist a verified sample of human labeled solar events for more than one category of event. The closest system is the Heliophysics Event Knowledgebase (HEK) \cite{hurlburt:2012} which combines data mining and computer vision with data visualization techniques to create a database of labeled events. These are sometimes verified by humans but can be problematic, especially with multiple entries per event to sift through. Each event is given one of their designated labels as shown in Table \ref{tab:heklabels}.  
@@ -459,7 +484,7 @@ For this project, a small curated set of solar events was produced using three s
   \label{tab:mylabels}
 \end{table}
 
-Twenty-seven image groupings of the SUVI six-band imagery were used for the labeled data as shown in Table \ref{tab:labelingtimes}. Each group consists of one image from each SUVI band, an h-alpha image, and any needed derived images used as features in the machine learning.
+Twenty-seven image groupings of the SUVI six-band imagery were used for the labeled data as shown in Table \ref{tab:labelingtimes}. Each group consists of one image from each SUVI band, an \halpha image, and any needed derived images used as features in the machine learning.
 
 \begin{table}[ht!]
   \centering
@@ -540,7 +565,7 @@ Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot
 
 \section{Spatial features}
 
-\section{HALPHA inclusion}
+\section{\halpha inclusion}\label{sec:halphainclusion}
 
 \chapter{Applications} \label{ch:application}
 
