@@ -42,7 +42,7 @@
 \definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 \definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
 \usepackage{hyperref} % Required for hyperlinks
-\hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=color2,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Title},pdfauthor={Author}}
+\hypersetup{hidelinks,colorlinks,breaklinks=true,urlcolor=color2,citecolor=color1,linkcolor=color1,bookmarksopen=false,pdftitle={Solar Thematic Map Generation via Machine Learning},pdfauthor={J. Marcus Hughes}}
 %% Used to set up better TODO items
 % \usepackage[paperwidth=210mm,
 %             paperheight=297mm,
@@ -65,11 +65,12 @@
 %\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
 %\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
 %\newcommandx{\noshow}[2][1=]{\todo[disable,#1]{#2}}
-
+\title{My title}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Thesis body %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Title page %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,18 +146,38 @@ This thesis has several key goals as outlined here:
 \end{itemize}
 
 \section{Organization}
-Chapter \ref{ch:background} introduces the background information for solar physics in Section \ref{sec:solphys} and machine learning \ref{sec:ml}. This includes a definition of the relevant solar structures to classify.  Then, Chapter \ref{ch:relatedwork} documents prior work in solar imge classification including both the unsupervised systems in Section \ref{sec:unsupervised} and superverised systems in Section \ref{sec:supervised}. The author's original contributions begin in Chapter \ref{ch:data}, after a description of the solar imagery, with an overview and analysis of the human annotated images. Chapter \ref{ch:classifiers} details the classifiers tested in this approach through experiments in Chapter \ref{ch:experiments}. Two applications of the solar classification are explored in Chapter \ref{ch:application}: the labeled solar database in Section \ref{sec:database} and fractal dimension estimastion for solar features in Section \ref{sec:fractal}. Finally, Chapter \ref{ch:conclusion} outlines the results of the entire project and potential future work. 
+Chapter \ref{ch:background} introduces the background information for solar physics. This includes a definition of the relevant solar structures to classify.  Then, Chapter \ref{ch:relatedwork} documents prior work in solar imge classification including both the unsupervised systems in Section \ref{sec:unsupervised} and superverised systems in Section \ref{sec:supervised}. The author's original contributions begin in Chapter \ref{ch:data}, after a description of the solar imagery, with an overview and analysis of the human annotated images. Chapter \ref{ch:classifiers} details the classifiers tested in this approach through experiments in Chapter \ref{ch:experiments}. Two applications of the solar classification are explored in Chapter \ref{ch:application}: the labeled solar database in Section \ref{sec:database} and fractal dimension estimastion for solar features in Section \ref{sec:fractal}. Finally, Chapter \ref{ch:conclusion} outlines the results of the entire project and potential future work. 
 
-\chapter{Background} \label{ch:background}
+\chapter{Solar Physics Background} \label{ch:background}
 
-This chapter describes the background of solar weather as well as an introduction to machine learning used in this project.  
+As mentioned, space weather has dangerous and expensive consequences including harm to astronauts and satellites, destruction of power grids, and routine rerouting of intercontinental flights over the north pole. These different effects stem from a variety of solar events. These are outlined in this section with a description of the structure of the varying phenomena.
 
-\section{Solar Physics} \label{sec:solphys}
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.4]{sunparts}
+    \caption{{\bf Parts of the Sun}: This image indicates many of the parts of the Sun. The top cutaway portion shows the internal structure of the Sun, not discussed in this thesis. The bottom portion shows many of the features discussed here which comprise the solar atmosphere. The solar corona is the uppermost portion of the Sun which is millions of degrees Celsius. From this and the cooler and lower photosphere and chromosphere, the space weather emanates. Several different features discussed in Section \ref{sec:solarstruct} are shown, e.g. prominences, flares, and coronal holes \cite{sunparts}.}
+    \label{fig:sunparts}
+ \end{center}
+\end{figure}
 
-Space weather has dangerous and expensive consequences including harm to astronauts and satellites, destruction of power grids, and routine rerouting of intercontinental flights over the north pole. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. It is critical to have early warning of such events to enact proper protections. The new Solar Ultraviolet Imager (SUVI), a camera aboard the National Oceanic and Atmospheric Administration's (NOAA) GOES-R weather satellite, responds to this need as it captures an image of the Sun every 10 seconds \cite{suvibg}. This flood of data cannot be digested by human forecasters quick enough, necessitating machine learning image classification to identify important events. Machine learning also allows for organized archival of the projected 20 years of imaging, allowing researchers to find relevant data to test new solar models. This is an interesting supervised machine learning problem because it operates on movies of multi-spectral, noisy images. SUVI by no means is the first satellite to explore this problem. This paper explores existing approaches to the astronomical problem as well as looking at parallel solutions in Earth remote sensing applications. Finally, it explores state-of-the-art computer vision research and new approaches to image segmentation and classification.
 
-Space weather has dangerous and expensive consequences including harm to astronauts and satellites, destruction of power grids, and routine rerouting of intercontinental flights over the north pole. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. It is critical to have early warning of such events to enact proper protections. The new Solar Ultraviolet Imager (SUVI), a camera aboard the National Oceanic and Atmospheric Administration's (NOAA) GOES-R weather satellite, responds to this need as it captures an image of the Sun every 10 seconds \cite{suvibg}. This flood of data cannot be digested by human forecasters quick enough, necessitating machine learning image classification to identify important events. Machine learning also allows for organized archival of the projected 20 years of imaging, allowing researchers to find relevant data to test new solar models. This is an interesting supervised machine learning problem because it operates on movies of multi-spectral, noisy images. SUVI by no means is the first satellite to explore this problem. This paper explores existing approaches to the astronomical problem as well as looking at parallel solutions in Earth remote sensing applications. Finally, it explores state-of-the-art computer vision research and new approaches to image segmentation and classification.
+\section{Space Weather Phenomenon} \label{sec:space-weather-events}
+The Sun is responsible for many phenomena in daily life: heat, light, even life itself is traced back to the Sun. In 1733, Jean Jacque d'Ortous de Mairan proposed an explanation for aurora: it's from solar gas entering Earth's atmosphere \cite[p. 51]{langbook}. Later in the 20th century, Birkeland argued that it's fom Earth's magnetic field focusing electrons around Earth's poles \cite[p. 51]{langbook}. Today, the Sun's magnetic field is a recognized as the driver of many of its internal and visible properties: the cycle of sunspots and its temperature to name a couple. In 1958, Eugene Parker advanced a model for the Sun's impact on Earth via the solar wind, the pressure caused from outflowing solar material, with a theortical model where the wind propogates as a spiral into interplanetary space from the Sun's rotation and radial flow \cite[p. 62]{langbook}. This is now referred to as the Parker Spiral in Figure \ref{fig:parkerspiral}. 
 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.6]{parkerspiral}
+    \caption{{\bf Parker Spiral}: The Parker Spiral explains how events on the Sun propogate outward. Events on one region of the Sun have a direct line along the Parker Spiral toward Earth while events on another portion will miss Earth \cite{spiralimage}}
+    \label{fig:parkerspiral}
+ \end{center}
+\end{figure}
+
+The solar wind continuously is blowing millions of tons of material away from the Sun as a stream of rarefied plasma. When it reaches Earth's orbit, it's traveling at roughly 600 km/s  with 10 million particles per cubic meter \cite[p. 67]{langbook}. As the Sun goes through an 11-year cycle, this stream of material shifts from stronger to weaker and back again. During the most energetic portion of the cycle, there are frequent sudden and rapid outpbursts called solar flares. These release energy equivalent to million of 100-megaton bombs exploding at the same time over less than ten minutes \cite[p. 89]{langbook}. These solar flares hurl high energy particles along the Parker Spiral into interplanetary space at nearly the speed of light. The strongest of these flares can cause "planet-wide radio blackouts and longlasting radiation storms" \cite[p. 255]{langbook}. 
+
+Flares are often accompanied by coronal mass ejections (CMEs), although CMEs and flares can occur independently of each other. These eruptions send roughly 10 billion tons of solar material into interplanetary space. These have been reported to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. Smaller outbursts called "filament lift offs" can also release material towards Earth. Beyond these eruptions, there is variable strength solar wind constantly baragging Earth. Wind from coronal holes, discussed shortly, is faster and can be more of a constant threat. 
+
+\section{Solar Structures}\label{sec:solarstruct}
+Figure \ref{fig:sunparts} showed some of the different parts of the Sun. In Table \ref{tab:solarfeatures} there is a listing of some of the more prominent solar features with a brief description of them. 
 
 \begin{table}[ht!]
 \centering
@@ -178,24 +199,11 @@ Space weather has dangerous and expensive consequences including harm to astrona
  \label{tab:solarfeatures}
 \end{table}
 
-
-Earth is situated inside the Sun's tremendous magnetic field. Features on the Sun evolve and expose Earth to new environmental conditions. The interaction between the Sun's magnetic field and Earth is called space weather.
-
-\subsection{Solar Structures}
-
-\subsection{Space Weather Phenomenon} \label{sec:space-weather-events}
-
-\subsection{Space Weather Mitigation}
-
-\section{Machine Learning} \label{sec:ml}
-
-\subsection{Machine Learning Experiment Design}
-
-\subsection{Classifiers}
-
-\subsection{Computer Vision}
+Active regions will often be called bright regions in this work. Bright regions is a broader term used in space weather forecasting while active regions is the more technical description. 
 
 \chapter{Related work} \label{ch:relatedwork}
+This chapter surveys some of the underlying work on solar image classification. 
+
 \section{Synoptic Charts and Thematic Maps}
 When classifying space weather phenomena, it is important to understand its context: where it is on the solar disk, when it developed, and its strength. The Sun has a consistent radial outflow of material at approximately 400 km/s as it rotates on its axis every 25 days. This results in magentic field lines in a spiral pattern called the ``Parker Spiral.'' As such, an ejection of material from the Sun on the eastern side of the Sun will reach Earth quicker than an ejection from the western side of the Sun.  Thus, knowing the both the location of the event and the time of the event is very important when considering when the impacts will be felt on Earth. A detailed understanding of the strength of the event and exigent conditions is required to estimate the impact on Earth when it does arrive.
 
@@ -213,22 +221,22 @@ At the moment, reliable synoptic charts used in forecasting are predominantly hu
 
 \section{Data sources}
 \subsection{Raw imagery to classify} 
-For solar image classification many types and sources of images can be utilized. While brand new imagers like the Solar Ultraviolet Imager (SUVI) do not yet have public data repositories, Sunpy, a python package for solar physics, provides an interface for the Virtual Solar Observatory's large database of solar images \cite{sunpy}. Unsupervised approaches to the problem use this tool and others like it to fetch H$\alpha$, ultraviolet, x-ray, white light, magnetic, and other forms of solar images. They utilize from the Solar Dynamics Observatory, the Solar and Heliospheric Observatory, Solar Terrestrial Relations Observatory, Transition Region And Coronal Explorer, the Global Oscillation Network Group, and many other sources. There is continuous imagery of the Sun at many wavelengths and heights; raw data is generally not a limitation. Instead, the limitation is incorporating raw imagery into a classifier or obtaining labeled data for a supervised trainer. 
+For solar image classification many types and sources of images can be utilized. While brand new imagers like the Solar Ultraviolet Imager (SUVI) do not yet have public data repositories, Sunpy, a python package for solar physics, provides an interface for the Virtual Solar Observatory's large database of solar images \cite{sunpy}. Unsupervised approaches to the problem use this tool and others like it to fetch \halpha, ultraviolet, x-ray, white light, magnetic, and other forms of solar images. They utilize from the Solar Dynamics Observatory, the Solar and Heliospheric Observatory, Solar Terrestrial Relations Observatory, Transition Region And Coronal Explorer, the Global Oscillation Network Group, and many other sources. There is continuous imagery of the Sun at many wavelengths and heights; raw data is generally not a limitation. Instead, the limitation is incorporating raw imagery into a classifier or obtaining labeled data for a supervised trainer. 
 
 \subsection{Labeled data for training} 
 The supervised techniques discussed in Section \ref{sec:supervised} require labeled data to train their classifiers. A research group formerly at Montana State University and now at Georgia State University has collated large amounts of images with labeling from unsupervised classifiers. The original dataset in 2013 comprised over 15,000 images with 24,000 events observed in the first half of 2012 by the Solar Dynamics Observatory (SDO). Using the SDO unsupervised classifiers, small grid regions of the image were labeled active region, coronal hole, filament, flare, sigmoid, and sunspot. Each grid region is also statistically analyzed and assigned an entropy, mean, standard deviation, fractal dimension, skewness, kurtosis, uniformity, relative smoothness, contrast, and directionality measures \cite{schuh:2013}. This data was later incorporated into a database tool that allows the user to identify an example image and query the full dataset for similar events \cite{banda:2014}. This dataset and tool was later expanded to the full SDO observing database \cite{schuh:2016}. 
 
 \section{Solar machine learning}
-Solar machine learning can be divided into two categories: unsupervised and supervised. Unsupervised techniques do not required human input of labeled images but instead often run on rules; this approach is much more common in astronomy. Supervised techniques are often more flexible and outperform unsupervised techniques in other related fields \cite{anzanello:2014, yu:2013,guerra:2011, huang:2017}. Due to the lack of consistent evaluation, one cannot directly claim this for solar segmentation.
+Solar machine learning can be divided into two categories: unsupervised and supervised. Unsupervised techniques do not required human input of labeled images but instead often run on rules; this approach is much more common in astronomy. Supervised techniques are often more flexible and outperform unsupervised techniques in other related fields \cite{anzanello:2014, yu:2013,guerra:2011, huang:2017}.
 
 \subsection{Unsupervised solar segmentation} \label{sec:unsupervised}
 Unsupervised solar segmentation can be broken into many approaches: edge-based algorithms, region-based algorithms, hybrid algorithms, and artificial intelligence approaches. The first three categories are more image-processing techniques solely while artificial intelligence approaches are more generic examples of clustering, support-vector machines, and other tools. These can be used in tandem with the pure image processing techniques. 
 
 \subsubsection{Edge-based algorithms}
-Edge-based techniques utilize discontinuities and identify different features utilizing boundaries. Curto, Blanca, \& Martinez (2008) employed edge-based unsupervised detection when identifying sunpots in H$\alpha$ images \cite{curto2008automatic}. Since sunpots have crisp boundaries their edges can be used to quickly identify them. Curto, Blanca, \& Martinez (2008) used morphological operations to emphasize these boundaries: erosion, dilation, opening, closing, and the top hat transformation. Erosion shrinks bright regions by removing boundary pixels while dilation grows them. Dilation will also fill holes in features. Opening is an erosion followed by a dilation while closing is dilation followed by erosion. Both closing and opening smooth the image: opening fills shape holes, whereas closing breaks wide lines and erases thin lines \cite{curto2008automatic}. The top hat transformation subtracts the original image by the closing of the image. It results in an image showing only the erased parts. By stringing together an empirically determined set of operations, they were able to reliably identify sunpots. Qu et al.(2005) ave a similar system that identifies filaments \cite{qu2005automatic}. 
+Edge-based techniques utilize discontinuities and identify different features utilizing boundaries. Curto, Blanca, \& Martinez (2008) employed edge-based unsupervised detection when identifying sunpots in \halpha images \cite{curto2008automatic}. Since sunpots have crisp boundaries their edges can be used to quickly identify them. Curto, Blanca, \& Martinez (2008) used morphological operations to emphasize these boundaries: erosion, dilation, opening, closing, and the top hat transformation. Erosion shrinks bright regions by removing boundary pixels while dilation grows them. Dilation will also fill holes in features. Opening is an erosion followed by a dilation while closing is dilation followed by erosion. Both closing and opening smooth the image: opening fills shape holes, whereas closing breaks wide lines and erases thin lines \cite{curto2008automatic}. The top hat transformation subtracts the original image by the closing of the image. It results in an image showing only the erased parts. By stringing together an empirically determined set of operations, they were able to reliably identify sunpots. Qu et al.(2005) ave a similar system that identifies filaments \cite{qu2005automatic}. 
 
 \subsubsection{Region-based methods}
-Region based approaches include histogram segmentations, clustering/thresholding, and region-growing approaches. Fuller, Aboudarham, and Bentley (2005) implemented a filament classifier using region growing \cite{fuller:2005}. This work is based off more generic computer vision region growing by Gonzalez \& Woods (2002) \cite{gonzalez:2002}. After calibrating, removing dust, and sharpening the solar H$\alpha$ images \cite{standardization}, seed pixels are chosen for region growing using a thresholding technique. Only the dimmest pixels are chosen since they should be at the center of filaments. For multiple iterations, the region grows adding new pixels that are connected to seeds and follow the mean and standard deviation of the neighborhood and consequently are similar to the seed. Finally, a morphological closing operation is applied to remove any holes and make the filaments smoother. After this, the center line of the filament can be determined and characterized using a combination of convolutions, dilations, and erosions. This characterization makes it easier to track filament evolution and measure their length. Ultimately, this technique produced 1149 filaments compared to a human labeled 1232 filaments \cite{fuller:2005}. This resulted in missing 10\% of the filaments in an image. Roughly 5\% of the detections were false positives, keying on sunspots instead of filaments because there was no spatial requirement for filaments to be long and skinny. Thus, they could be confused for sunspots which are also dark in H$\alpha$ images. Other region growing methods include: Benkhalil et al.(2006) which used ionized calcium, H$\alpha$, and extreme ultraviolet imagery to grow active region boundaries \cite{benkhalil}, Higgins et al. (2011) which combined magnetograms, image differencing, and region growing to identify and track emerging active regions \cite{higgins}, and McAteer et al. (2005) which used full-disk magnetograms to identify magnetically significant regions and characterize their flare potential \cite{mcateer}. 
+Region based approaches include histogram segmentations, clustering/thresholding, and region-growing approaches. Fuller, Aboudarham, and Bentley (2005) implemented a filament classifier using region growing \cite{fuller:2005}. This work is based off more generic computer vision region growing by Gonzalez \& Woods (2002) \cite{gonzalez:2002}. After calibrating, removing dust, and sharpening the solar \halpha images \cite{standardization}, seed pixels are chosen for region growing using a thresholding technique. Only the dimmest pixels are chosen since they should be at the center of filaments. For multiple iterations, the region grows adding new pixels that are connected to seeds and follow the mean and standard deviation of the neighborhood and consequently are similar to the seed. Finally, a morphological closing operation is applied to remove any holes and make the filaments smoother. After this, the center line of the filament can be determined and characterized using a combination of convolutions, dilations, and erosions. This characterization makes it easier to track filament evolution and measure their length. Ultimately, this technique produced 1149 filaments compared to a human labeled 1232 filaments \cite{fuller:2005}. This resulted in missing 10\% of the filaments in an image. Roughly 5\% of the detections were false positives, keying on sunspots instead of filaments because there was no spatial requirement for filaments to be long and skinny. Thus, they could be confused for sunspots which are also dark in \halpha images. Other region growing methods include: Benkhalil et al.(2006) which used ionized calcium, \halpha, and extreme ultraviolet imagery to grow active region boundaries \cite{benkhalil}, Higgins et al. (2011) which combined magnetograms, image differencing, and region growing to identify and track emerging active regions \cite{higgins}, and McAteer et al. (2005) which used full-disk magnetograms to identify magnetically significant regions and characterize their flare potential \cite{mcateer}. 
 
 Instead of growing regions, one can identify significant features by looking at the histogram of their intensities in various wavelengths. Olmedo et al. (2008) designed such a system to identify coronal mass ejections. The intensity in solar images can be plotted as a histogram as a function of position angle as shown in Figure \ref{fig:olmedo}. A threshold is used to determine what is a significant event in the histogram. If portions of the histogram exceed this, they are declared a region in the image and grouped together. Some region growing is also used in this approach. Ultimately, they were able to recover about 75\% of the human identified coronal mass ejections in a 12-month period. Interestingly, they found an equal number of small coronal events that had been overlooked by humans, often weaker but creating an interesting new population for scientific research and space weather awareness \cite{olmedo2008automatic}. 
 
@@ -239,7 +247,6 @@ Instead of growing regions, one can identify significant features by looking at 
     \label{fig:olmedo}
  \end{center}
 \end{figure}
-
 
 Other histogram based methods include Preminger et al.(2001) which used contrast ratios between ionized calcium and magnetograms to identify sunspots and faculae \cite{preminger}.
 
@@ -291,7 +298,7 @@ For a much longer comparison of many different techniques see Aschwanden (2010) 
 \subsection{Supervised solar segmentation} \label{sec:supervised}
 There are relatively few supervised solar segmentation approaches but the existing approaches are very promising and tend to perform on a broader set of classes and image types. Thus, a bit more detail is provided in describing each approach. 
 
-\subsubsection{Maximum likelihood estimation}
+\subsubsection{Maximum likelihood estimation}\label{sec:riglermaxlikelihood}
 
 Rigler et al. (2012) proposed a preliminary naive Bayesian classifier for SUVI images using the Solar Dyanmics Observatory (SDO) Advanced Imaging Array (AIA) observations for testing \cite{rigler:2012}. Their work focused on eight classes: flare, prominence, active region, quiet corona (off-disk), quiet corona (on-disk), coronal hole (off-disk), coronal hole (on-disk), and outer space. They were able to achieve an average accuracyof 86\%. This was calculated by training the classifier on a set of data then testing it on a classified image that was not used for training. The tabulation was done strictly on a pixel by pixel basis, not checking if the error was coherent or random noise. Prominence was the most problematic class with only 41\% of prominence pixels being classified correctly. They were often misclassified as off-disk quiet corona or on-disk coronal hole.
 
@@ -346,7 +353,7 @@ Deep convolutional neural networks have proven to be very skilled in classifying
 Kucuk et al.(2017) applied the first convolutional neural network to solar imagery for classification \cite{kucuk:2017}. While classifying over a finer granularity of classes they were able to achieve an average 70\% accuracy across each class. This convolutional neural network approach outperformed the only other published neural network solar segmentation found during this review. Zharkova \& Schetinin (2005) employed a feed-forward neural network with two hidden neurons and one output neuron to identify solar filaments at 82\% accuracy \cite{zharkova:2005}. This result is not directly comparable since it only classified one type of feature. However, it illustrated the power of neural networks in solar images. Filament classification by classical image processing techniques is often confused by the highly variable background between different parts of a filament and from filament to filament. The artificial neural network was able to flexibly learn many patterns and more accurately identify filaments. At the time, it was only outperformed by a region-growing approach \cite{fuller:2005}. 
 
 Up until now, classification has only been discussed in a spatial domain. However, flares and coronal mass ejections have a temporal components. They are by definition changing features. Borda et al. (2002) implemented a simple neural network consisting of two layers (not including input): a hidden layer of nonlinear neurons and
-an output layer of one linear neuron \cite{borda2002automatic}. Given optical H$\alpha$ images, it identifies solar flares in real-time. It operates on 7 input features: mean image brightness, standard deviation of the brightness, the pixel of maximum brightness change between images, absolute brightness of pixel with maximum change, radial position of that pixel, variation of mean brightness between two images (to characterize possible weather influences), and the contrast between the pixel with largest change in brightness and its neighbors. Given 124 test events, fewer than 5\% were misidentified. (The paper does not make clear about false positives and false negatives.) Accounting for normal operations, this would be a misclassification every few days. There has been limited solar time series neural networks beyond this, but it establishes a baseline system for future architectures and generalizations to other feature types.
+an output layer of one linear neuron \cite{borda2002automatic}. Given optical \halpha images, it identifies solar flares in real-time. It operates on 7 input features: mean image brightness, standard deviation of the brightness, the pixel of maximum brightness change between images, absolute brightness of pixel with maximum change, radial position of that pixel, variation of mean brightness between two images (to characterize possible weather influences), and the contrast between the pixel with largest change in brightness and its neighbors. Given 124 test events, fewer than 5\% were misidentified. (The paper does not make clear about false positives and false negatives.) Accounting for normal operations, this would be a misclassification every few days. There has been limited solar time series neural networks beyond this, but it establishes a baseline system for future architectures and generalizations to other feature types.
 
 \section{Earth Remote Sensing}
 Earth remote sensing of multiwavelength features has many more applications and a longer availability of data and thus has advanced further than solar machine learning techniques. 
@@ -362,7 +369,7 @@ machine, genetic algorithms, Fuzzy classification, neural networks, regression m
 analysis techniques in Earth remote sensing. 
 
 \section{General Computer Vision}
-Cutting edge computer vision research can be applied to the solar segmentation problem. The solar segmentation problem and producing thematic maps is an example of semantic segmentation, a well studied problem in computer vision. 
+Cutting edge computer vision research can be applied to the solar segmentation problem. The solar segmentation problem and producing thematic maps is an example of semantic segmentation, a well studied problem in computer vision. However, it is difficult to apply these techniques to solar image segmentation because they require large labeled datasets. 
 
 \subsection{Fully convolutional neural networks}
 The notion of extending convolutional neural networks to do dense prediction, effectively creating a thematic map, was first proposed by Matan et al. (1991) \cite{matan} to extend the LeNet convolutional neural network \cite{lenet} for handwritten digit recognition. Shelhamer, Long, \& Darrell (2016) presented a new implementation, the fully convolutional neural network (FCN), that takes arbitrarily sized input and creates a similarly sized semantic segmentation \cite{fcnn}. During their development, they thoroughly describe convolutional neural network for semantic segmentation up until 2016 \cite{fcnn}.
@@ -426,7 +433,7 @@ Each image is composed of 1280x1280 14-bit pixels. The individual pixels are 2.5
 One image, in a single passband, is taken every 10 seconds. The observation sequence insures that every passband is observed at least once every four minutes. In addition, SUVI captures a short exposure time and a long exposure time image in each passband. During energetic and bright events like flares, the detector would saturate at the longer exposure time needed for high contrast images during times without energetic events. These two exposure times are combined to create high-dynamic-range composite images, which a two to three orders of magnitude increased dyanmic range than a single exposure time. In addition, SUVI has anti-blooming circuitry so that saturation in the long exposure image does not deteriorate quality in the composite image. This compositing will allow more classification of very bright active regions and flares than if another data set were used. Finally, the composite images are aligned so that the Sun is centered in each. 
 \todo{this is all from suvibg2 but how many times should I cite?}
 
-\subsection*{\halpha imagery} 
+\subsection{\halpha imagery} 
 As discussed in Section \ref{sec:halphainclusion}, it was impossible to differentiate between all labeled classes using only ultraviolet imagery. Thus, \halpha images were included. These images were gathered using the Virtual Solar Observatory \cite{vso}, an online compilation of images of the Sun from various sources, using SunPy \cite{sunpy, sunpyweb}, a Python toolkit for solar physics. In particular, \halpha images from the Global Oscillation Network Group (GONG) were used since they have continuous time coverage because of their seven globally distributed observing sites in Learmonth, Australia; Udaipur, India; El Teide, Spain; Cerro Tololo, Chile; Tuscon, Arizona, United States; Big Bear, California, United States; and Mauna Loa, Hawaii, United States. Each image is 2048x2048 pixels with each pixel being one arcsecond on a side. These are rescaled to SUVI using a linear transformation. \todo{insert linear transformation}
 
 \begin{figure}[ht]
@@ -563,13 +570,6 @@ Upon startup, the software will look at its configuration file and determine how
 
 In a single static image, it is difficult to label all the features because they are on different spatial, brightness, and spectral scales. Pan and zoom tools were included to allow the user to easily navigate about an image. In the configure panel, the annotator can adjust the left, preview solar image. They can choose to either see an RGB image that combines three different passbands or look at a single passband in a greyscale image. If they select the RGB they can assign the colors to their desired passband as well as what scaling factor to use. The scaling factor is included because the brightness values between different passbands differ. Without the adjustable scaling factor, the brightest passband will always dominate and more subtle detail cannot be seen. A single color option is included because some features may only be definitively visible in one passband, e.g. filaments in \halpha. 
 
-\begin{figure}[ht]
-  \begin{center}
-    \includegraphics[scale=0.25]{labeling-mid}
-    \caption{{\bf View during labeling with annotation software:} As an annotater progresses, they can utilize the various zoom, pan, reset (home) zoom, back one nagigational level, and forward one navigational level to aid their labeling. The annotator can change to the classify tab and select which feature they would like to draw directly on the Sun. Here, the 30.4 nm passband is being displayed.}
-    \label{fig:label-mid}
- \end{center}
-\end{figure}
 
 \subsubsection{Iterated improvements}
 While this software is not complicated, it was not the first approach. In the very first approach, the image was automatically segmented into super-pixels using the Simple Linear Iterative Clustering (SLIC) segmentation algorithm \cite{SLIC}. Drawing boundaries is more time consuming than simply clicking an region of the image. SLIC was used in the hopes of producing more labeled images. However, it systematically over/under segmented specific classes, making their boundaries consistently too large or small, and did not consistently segment filaments. It instead lumped the structure into a larger superpixel with other classifications. 
@@ -581,31 +581,137 @@ Since this is the first digitally collected dataset of human solar annotations f
 
 \subsubsection{Self-consistency of annotators} \label{sec:consistency}
 
+Each annotator was asked to label each image group twice. They were not informed when they were relabling but instead shown the images in a random order. This allows for a check on human self-consistency. If the task were trivial, then the annotators would be expected to have perfect consistency. However, this is not the case. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{placeholder.jpg}
+    \caption{{\bf Inconsistecy for annotator} Left and right are annotations for the same image by the same annotator. As you can see the annotator \todo{detail the differences}.} 
+    \label{fig:annotatorconsistency}
+ \end{center}
+\end{figure}
+
+In more detail, Table \ref{tab:annotatorconsistency} tabulates which features annotators missed on average.  
+
+\begin{table}[ht!]
+\centering
+ \begin{tabular}{||c m{0.5\textwidth}||} 
+ \hline
+ Name & Description \\
+   \hline\hline
+   Active regions & Complexes of brighter and darker regions in UV observations caused by the solar magnetic field piercing through the solar atmosphere \\ \hline \\
+   Filaments & A suspension of material high in the solar atmosphere by magnetic arches\\ \hline \\
+   Prominences & A filament observed off the disk of the Sun \\ \hline \\
+   Coronal holes & Regions where the magnetic field is open with no clear reconnection back into the Sun which allow fast outflow of material \\ \hline \\
+   Flares & A sudden brightening on the Sun \\ \hline \\
+   Coronal mass ejection & An event when the Sun dispels mass and charged particles, sometimes towards Earth \\ \hline \\
+   Sigmoids & S-shaped structures on the surface of the Sun thought to be precursors to flares \\ \hline \\
+   Quiet corona & Parts of the Sun devoid of activity \\ 
+ \hline
+ \end{tabular}
+ \caption{Annotator consistency: For each annotator and image, the number of inconsistenceies per label is shown.  \todo{fill in table!}}
+ \label{tab:annotatorconsistency}
+\end{table}
+
 \subsubsection{Agreement among annotators} \label{sec:agreement}
+Further, there is no universally agreed upon definition for each labeling class. Some cases are obvious, e.g. outer space. However, there are times where it is unclear which label to apply, for example a filament versus a coronal hole, or where exactly the boundary of the label should be drawn, for example which portions consist of active regions. The labeled database gives data-driven insight on where solar physics experts disagree. The disagreement may be amplified if experts from different research institutions or very different research focus are selected. 
+
+\todo{complete analysis}
+
+The agreement can be quantified using Fleiss's kappa \cite{landiskoch}:
+\[ \kappa = \frac{\overline{P} -    \overline{P_e}}{1-\overline{P_e}} \] where $\overline{P} - \overline{P_e}$ quantifies actual observed agreement above chance and $1 - \overline{P_e}$ quantifes attainable agreement above chance. These terms are calculated where $N$ is the number of pixels, $n$ is the number of ratings per pixel, and $k$ is the number of classes each pixel can be assigned. Each pixel is index $i = 1, 2, ..., N$ and each class is indexed $j = 1, 2, ..., k$. Then, $n_{ij}$ is the number of annotators who labeled the $i$-th pixel with class $j$. 
+
+\begin{align*}
+p_j &= \frac{1}{Nn} \sum_{i=1}^{N} n_{ij} \\
+P_i &= \frac{1}{n(n-1)} \left(\sum_{j=1}^{k} n_{ij}^2 - n_{ij} \right) \\
+\overline{P} &= \frac{1}{N} \sum_{i=1}^N P_i \\
+\overline{P_e} &= \sum_{j=1}^k p_j^2
+\end{align*}
+
+Landis and Koch (1977) proposed the scale in Table \ref{tab:fleiss} for Fleiss's kappa \cite{landiskoch}. 
+
+\begin{table}[ht!]
+  \centering
+  \begin{tabular}{|c c|}
+  \hline    
+$\kappa$ range &  Interpretation \\
+\hline \hline
+$<$ 0 & No agreement \\ 
+0.0 - 0.19 & Poor agreement \\ 
+0.20 - 0.39 & Fair agreement \\
+0.40 - 0.59 & Moderate agreement \\
+0.60 - 0.79 & Substantial agreement \\ 
+0.80 - 1.00 & Almost perfect agreement \\
+\hline
+  \end{tabular}
+  \caption{Interpreation of Fleiss's kappa coefficient for agreement}
+  \label{tab:fleiss}
+\end{table}
+
+\todo{perform analysis}
+
+
+
 
 \chapter{Classifiers} \label{ch:classifiers}
 
+Ideally, a deep learning approach such as a convolutional neural network would be used because in other computer vision applications they have greatly outperformed other machine learning techniques. However, they require large amounts of training data. Therefore, this chapter introduces the machine learning techniques used. Instead of treating the images as a collection of individual pixels as described in the related work (Chapter \ref{ch:relatedwork}) or in a convolutional sense, these classifiers use neighborhoods of multichannel pixels. The neighborhood of neighborhood of $(x_0, y_0)$ is $\{(x_i, y_i) | x_0 - w \le x_i \le x_0 + w, y_0 - h \le y_i \le y_0 + h\}$  where $w$ and $h$ are the number of pixels on either side of the reference pixel $(x_0, y_0)$ used in the horizontal and vertical dimension respectively. Each multichannel pixel is a $m \times 1$-dimension column vector where each entry corresponds to a spectral passband or derived channel. The derived channels are ratios of spectral passbands or spatial information but could be extended to any type of feature. The goal is to assign each multichannel pixel a label from Table \ref{tab:mylabels}. 
+
 \section{Naive Bayesian Maximum Likelihood}
 
+This approach mimics the maximum likelihood estimation of \cite{rigler:2012} described in Section \ref{sec:riglermaxlikelihood}. It is modified for pixel neighborhoods. If $w=h=0$, this model is identical to \cite{rigler:2012}. 
+
+Like before, every pixel is classfied into exactly one class using multispectral ultraviolet images, \halpha, and other derived channels as features. A pixel is a member of a pixel neighborhood that is used in classifying. Therefore, a pixel at $(i,j)$ is the reference pixel to the neighborhood $\{(i, j) | x_0 - j \le x_i \le x_0 + j, y_0 - k \le y_i \le y_0 + k\}$ where each neighborhood pixel has $c$ channels and can be described as a vector:
+\[x_{(i,j)} = \begin{bmatrix} x_1 & x_2 & \hdots & x_c \end{bmatrix}^T \]
+Thus, the neighborhood of pixels is generalized as a $2w + 1 \times 2h + 1 \times c$ dimensional matrix, the algamation of all neighborhood pixels. 
+For each $x_{(i,j)}$ pixel a label $w_k$ from the set of classes $W$. This approach employs Bayes' Theorem:
+\[ P(w_k | x_{(i,j)}) = \frac{P(x_{(i,j)} | w_k) P(w_k)}{P(x_{(i,j)})} \]
+Since $P(x_{(i,j)})$ is not a function of the label classification, it can be ignored.
+\[ P(w_j | x_{(i,j)}) \propto P(x_{(i,j)}) P(w_{k}) \].
+Following \cite{rigler:2012}: 
+\[ P(w_k | x_{(i,j)}) \propto P(x_{(i,j)} | w_k) \]
+This approach is the maximum likelihood solution to this problem.
+
+Each class is modeled as a multivariate normal distribution, i.e. for each potential label there is a archetypal example pixel and all pixels with that label should be distributed normally about it. This is overly constraining if any given class has multiple distinct modes with respect to the selected data. However, this can be solved adding more subclasses for feathres. Alternatively, this section could be replaced with a Gaussian mixture approach. The multivariate distribution for class $w_k$ is characterized by a mean vector $\mu_k$ and covariance matrix $C_k$ which are calculated as:
+\[ \mu_k = \frac{\sum_{x \in W_k} x}{|W_k|} \]
+where $W_k$ is the collection of pixel neighborhoods where the reference pixel has label $w_k$. Similarly,
+\[ C_k = \frac{\sum_{x \in W_k} \begin{bmatrix} x - \mu_k \end{bmatrix} \times \begin{bmatrix} x - \mu_k \end{bmatrix}^T}{|W_k|} \].
+These mean vectors and covariance matrices characterize the class. Given this characterization for class $w_k$ one can calculate the conditional probability of a pixel $x_{(i,j)}$ having label $w_k$:
+\[ P(x_{(i,j)} | w_k) = \frac{1}{\sqrt{(2 \pi)^h} \sqrt{|C_k|}} \mathrm{exp} \left( \frac{-1}{2} \times \left(x_{(i,j)} - \mu_k \right)^T \times C_k^{-1} \times \left(x_{(i,j)} - \mu_k \right) \right) \]
+Thus, the label that maximizes this probability is assigned for the reference pixel.
+
+No smoothing is done in this version as in Rigler et al. (2012) \cite{rigler:2012}. 
+
 \section{Random Forest}
+The random forest is an ensemble of decision tree classifiers and are used in a variety of Earth remote sensing applications \cite{puissant2014object, salas2016multispectral, clark2016mapping, kulkarni2017multispectral, lowe:2015}. Solar image segmentation is very similar to remote Earth sensing, just with a different subject matter and often fewer passbands. In this application, an ensemble of $D$ decision trees with maximum depth $Q$ are used to form the random forest \todo{change to optimal}. The empircally best depth and number is determined in Section \ref{sec:randomfresthyperparameter}. The random forest is given the same types of input as the maximum likelihood classifier: the EUV channels, the \halpha channel, and derived channels (spatial, line ratios). The random forest implementation in Scikit-Learn is used \cite{scikit-learn}. 
 
 \section{Feed-forward Neural Network}
+A simple fully-connected feed forward network is employed here consisting of three densely connected hidden layers with an input layer with similar neighborhood inputs and an output layer for classes. The hidden layers had 16, 16, and 8 nodes \todo{change to optimal} each with relu activation. They were trained for \todo{this many} epochs with a batch size of \todo{this many}. 
 
 \section{Convolutional Neural Network}
+A convolutional neural network was attempted with the expectation of poor results because of insufficient training. The system was based on the Fully Convolutional Neural Network appraoch by Long, Shelhamer, \& Darrell (2015) \cite{fcnn}, a method to take arbitrarily sized image input and create similarly sized image output with classification labels. The specific implementation used was a modification of Sarath Shekkizar's Tensorflow implementation \cite{fcnntensorflow}. This approach was intialized with VGG-16 pretrained model, although it's unclear if this training helps for solar image segmentation as well. 
 
 \chapter{Experiments and Results} \label{ch:experiments}
 
-\section{Evaluation approaches}
+This chapter describes various experiments performed on the data and the conclusions derived while working toward the optimal machine learning solar image classifier. It begins by introducing the methods of evaluation in Section \ref{sec:evaluationmethods} and then proceeds through the experiments. 
+
+\section{Evaluation approaches}\label{sec:evaluationmethods}
 
 \subsection{Standard machine learning metrics}
 
 \subsection{Confusion matrix}
+\begin{figure}[ht]
+  \begin{center}
+    includegraphics[scale=0.8]{placeholder.jpg}
+    \caption{{\bf An example confusion matrix}: A confusion matrix is a method of showing accuracy of classifying each label. On the vertical axis the correct label is shown while on the horizontal axis the annotator's label is shown \todo{check that this is correct orientation}. Then, looking at the cell defined shows the percentage of labels in that region. Ideally, the diagonal should be 1 indicating every feature was labeled with the correct label always. }
+    \label{fig:exampleconfusionmatrix}
+ \end{center}
+\end{figure}
 
 \section{Data noise levels}
 
 \subsection{Noise-gater procedures}
 Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot noise that degrades the signal quality. This buries the signal and could potentially make it more difficult for the machine learning classifiers to cleanly identify the solar classes. Deforest (2017) proposed a method using localized Fourier transforms to characterize and remove the noise from images with specific application to extreme ultraviolet images. The effectiveness of noise-gating is shown in Figure \ref{fig:noise-gate-example}.
-
 
 \begin{figure}[ht]
   \begin{center}
@@ -615,19 +721,66 @@ Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot
  \end{center}
 \end{figure}
 
+The noise-gating algorithm was developed by \cite{deforest:2017} for use in extreme ultraviolet solar images, medical imaging, and other applications. The term noise-gating stems from the approach used in audio noise reduction and functions similarly: local adaptive filters in Fourier domain distinguish between coherent spatial structure and background noise. 
+
+Beginning with an image sequence, described as a mapping from coordinates in the horizontal and vertical spatial dimensions and a time dimension, i.e. $\mathbb{Z}^3 \rightarrow \mathbb{R}$, the noise is modeled as:
+\[Im(x,y,t) = Im_0(x,y,t) + N_a(x,y,t) + N_s(x,y,t) + N_{\text{other}}(x,y,t) \]
+The observed image sequence $Im(x,y,t)$ is a combination of $Im_0$, the idealized, noise-free image; $N_a$, background noise that is independent of the signal of $Im_0$; $N_s$, shot noise that is dependent on the signal of $Im_0$; and $N_{\text{other}}$, all other noise sources. For this application, $N_a$ and $N_{\text{other}}$ are ignored because $N_s$ dominates them. \todo{finish copying from notes}
+
+\subsection{Experimental results}
+The Bayesian approach is most sensitive to noise levels. 
+
 \section{Normalization of data}
+\todo{copy from notes}
 
 \section{Spatial features}
+\todo{copy from notes}
 
 \section{\halpha inclusion}\label{sec:halphainclusion}
+As seen in Figure \ref{fig:halphamotivation}, filaments and coronal holes cannot be differentiated using spectral information in the EUV channels of SUVI. Spatial approaches may discern between them because filaments are long, skinny strands while coronal holes are typically more round and extended. Alternatively, \halpha spectral information easily differentiates between coronal holes and filaments as shown in Figure \ref{fig:halphause}. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{placeholder.jpg}
+    \caption{{\bf Degeneracy of filament and coronal hole spectrally with EUV images} This histogram compares 19.5 nm pixel values for coronal holes, top, and filaments, bottom. They nearly overlap completely making it difficult for classification methods to key on sufficient themes for classification. All other EUV channels suffered from complete overlap. \halpha images differentiate filaments and coronal holes as shown in Figure \ref{fig:halphause}.} 
+    \label{fig:halphamotivation}
+ \end{center}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{placeholder.jpg}
+    \caption{{\bf Coronal hole and filament in \halpha} In \halpha images, filaments are dark strand structures while coronal holes have no apparent signature. This defining difference complements the degneracy in EUV images and boosts classifier performance.}
+    \label{fig:halphause}
+ \end{center}
+\end{figure}
+
+In this experiment, the suite of classifiers are first trained with only EUV channels. Then, they are trained with both EUV and \halpha channels. As shown in Figure \ref{fig:halpharesult} the \todo{insert results discussion here}. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.8]{placeholder.jpg}
+    \caption{{\bf \halpha inclusion experiment results}. \todo{add relevant caption based on results}}
+    \label{fig:halpharesult}
+ \end{center}
+\end{figure}
+
+\section{Hyperparameter selection}
+
+\subsection{Random forest} \label{sec:randomforesthyperparameter}
+
+\subsection{Neural network} \label{sec:neuralnetworkhyperparameter}
 
 \section{Comparison to existing classifiers}
 
 \chapter{Applications} \label{ch:application}
+Solar image segmentation is helpful for space weather forecasting but is not the end goal for research. Solar physicists can utilize it as a tool in research applications. To aid in finding relevant data, a database of observations with key statistical features can be compiled from thematic maps as described in \ref{sec:database}. Alternatively, the segmentation can be used directly as a boundary as illustrated in an exploration of fractal dimension and class properties in Section \ref{sec:fractal}. 
 
 \section{Database building} \label{sec:database}
+\todo{copy from notes}
 
 \section{Fractal dimension and class properties} \label{sec:fractal}
+\todo{copy from fractals paper}
 
 \chapter{Conclusion} \label{ch:conclusion}
 
@@ -636,6 +789,11 @@ Some SUVI channels, specifically the 94 angstroms channel, are riddled with shot
 \section{Future work}
 
 \subsection{Stability over solar cycles}
+
+\subsection{Converting digitized synoptic charts}
+
+
+\subsection{Prediction}
 
 %%%%%%%%References %%%%%%%%%%
 \bibliographystyle{acm}
