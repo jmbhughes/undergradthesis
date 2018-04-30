@@ -37,7 +37,7 @@
 %% set table width
 \usepackage{array}
 %% graphics path
-\graphicspath{{./figs/}}
+\graphicspath{{figs/}}
 %% hyperlinks
 \definecolor{color1}{RGB}{0,0,90} % Color of the article title and sections
 \definecolor{color2}{RGB}{0,20,20} % Color of the boxes behind the abstract and headings
@@ -58,6 +58,8 @@
 
 \newcommand{\halpha}{H$\alpha$\,}
 \newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
+\newcommand{\jp}[1]{{\color{blue}{jp: \textbf{#1}}}}
+\newcommand{\rr}[1]{{\color{blue}{pasachoff: \textbf{#1}}}}
 
 %\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 %\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
@@ -65,7 +67,6 @@
 %\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
 %\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
 %\newcommandx{\noshow}[2][1=]{\todo[disable,#1]{#2}}
-\title{My title}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Thesis body %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,7 +111,7 @@ Williamstown, Massachusetts\\
 \listoftables
 \onehalfspacing
 \chapter*{Abstract}
-
+\rr{this is a pasachoff}
 The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R series satellites collect continuous, high-quality imagery of the Sun in six wavelengths. SUVI imagers produce at least one image every 10 seconds, or 8,640 images per day, considerably more data than observers can digest in real time. Over the projected 20-year lifetime of the four GOES-R series spacecraft, SUVI will provide critical imagery for space weather forecasters and produce an extensive but unwieldy archive. In order to condense the database into a dynamic and searchable form we have developed solar thematic maps, maps of the Sun with key features, such as coronal holes, flares, bright regions, quiet corona, and filaments, identified. Thematic maps will be used in NOAA’s Space Weather Prediction Center to improve forecaster response time to solar events and generate several derivative products. Likewise, scientists use thematic maps to find observations of interest more easily.
 
 Using an expert-trained, naive Bayesian classifier to label each pixel, we create thematic maps in real-time. We created software to collect expert classifications of solar features based on SUVI images. Using this software, we compiled a database of expert classifications, from which we could characterize the distribution of pixels associated with each theme. Given new images, the classifier assigns each pixel the most appropriate label according to the trained distribution. Here we describe the software to collect expert training and the successes and limitations of the classifier. The algorithm excellently identifies coronal holes but fails to consistently detect filaments and prominences. We compare the Bayesian classifier to an artificial neural netowrk, one of our attempts to overcome the aforementioned limitations. These results are very promising and encourage future research into an ensemble classification approach.
@@ -433,7 +434,7 @@ Each image is composed of 1280x1280 14-bit pixels. The individual pixels are 2.5
 One image, in a single passband, is taken every 10 seconds. The observation sequence insures that every passband is observed at least once every four minutes. In addition, SUVI captures a short exposure time and a long exposure time image in each passband. During energetic and bright events like flares, the detector would saturate at the longer exposure time needed for high contrast images during times without energetic events. These two exposure times are combined to create high-dynamic-range composite images, which a two to three orders of magnitude increased dyanmic range than a single exposure time. In addition, SUVI has anti-blooming circuitry so that saturation in the long exposure image does not deteriorate quality in the composite image. This compositing will allow more classification of very bright active regions and flares than if another data set were used. Finally, the composite images are aligned so that the Sun is centered in each. 
 \todo{this is all from suvibg2 but how many times should I cite?}
 
-\subsection{\halpha imagery} 
+\subsection{H-alpha imagery} 
 As discussed in Section \ref{sec:halphainclusion}, it was impossible to differentiate between all labeled classes using only ultraviolet imagery. Thus, \halpha images were included. These images were gathered using the Virtual Solar Observatory \cite{vso}, an online compilation of images of the Sun from various sources, using SunPy \cite{sunpy, sunpyweb}, a Python toolkit for solar physics. In particular, \halpha images from the Global Oscillation Network Group (GONG) were used since they have continuous time coverage because of their seven globally distributed observing sites in Learmonth, Australia; Udaipur, India; El Teide, Spain; Cerro Tololo, Chile; Tuscon, Arizona, United States; Big Bear, California, United States; and Mauna Loa, Hawaii, United States. Each image is 2048x2048 pixels with each pixel being one arcsecond on a side. These are rescaled to SUVI using a linear transformation. \todo{insert linear transformation}
 
 \begin{figure}[ht]
@@ -451,9 +452,9 @@ Since this study is using supervised machine learning, labeled images of the Sun
 
 \begin{table}[ht!]
   \centering
-  \begin{tabular}{||p{4cm} p{10cm}||}
+  \begin{tabular}{|p{4cm} p{10cm}|}
     \hline
-    Event Class & Description \\
+    Event Class & Description \\ \hline
     Active Region & Solar Active Region\\
     Coronal Mass Ejection & Ejection of material from the solar corona \\
     Coronal Dimming & A large-scale reduction in EUV emission \\
@@ -482,9 +483,9 @@ For this project, a small curated set of solar events was produced using three s
 
 \begin{table}[ht!]
   \centering
-  \begin{tabular}{||p{4cm} p{10cm}||}
+  \begin{tabular}{|p{4cm} p{10cm}|}
     \hline
-    Event Class & Description \\
+    Event Class & Description \\ \hline
     Bright Region & Solar Active Region\\
     Coronal Hole & Dimmer region in EUV where magnetic field lines are open\\
     Filament & Solar Filament \\
@@ -581,45 +582,52 @@ Since this is the first digitally collected dataset of human solar annotations f
 
 \subsubsection{Self-consistency of annotators} \label{sec:consistency}
 
-Each annotator was asked to label each image group twice. They were not informed when they were relabling but instead shown the images in a random order. This allows for a check on human self-consistency. If the task were trivial, then the annotators would be expected to have perfect consistency. However, this is not the case. 
+Each annotator was asked to label each image group twice. They were not informed when they were relabeling but instead shown the images in a random order. This allows for a check on human self-consistency. If the task were trivial, then the annotators would be expected to have perfect consistency. However, this is not the case. 
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.8]{placeholder.jpg}
-    \caption{{\bf Inconsistecy for annotator} Left and right are annotations for the same image by the same annotator. As you can see the annotator \todo{detail the differences}.} 
+    \includegraphics[scale=0.1]{g20171015000202-0}
+    \includegraphics[scale=0.35]{g20171015000202}
+    \includegraphics[scale=0.1]{g20171015000202-1}
+    \caption{{\bf Mistake for annotator} Left and right are annotations for Group 16, at center, by Annotator A. As you can see the annotator appears to have forgotten to label bright regions in one case. Such errors could be identified manually and cleaned from the labeled set. } 
     \label{fig:annotatorconsistency}
  \end{center}
 \end{figure}
 
-In more detail, Table \ref{tab:annotatorconsistency} tabulates which features annotators missed on average.  
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.1]{g20171102000206-0}
+    \includegraphics[scale=0.35]{g20171102000206}
+    \includegraphics[scale=0.1]{g20171102000206-1}
+    \caption{{\bf Typical inconsistency for annotator} Left and right are annotations for Group 17, at center, by Annotator A. In this case, the annotator makes a typical kind of disagreement in the extent of boundaries. It is unclear which boundary is correct so both must be included in the labeled set.} 
+    \label{fig:annotatorconsistency2}
+ \end{center}
+\end{figure}
+
+The agreement can be quantified using Cohen's kappa or Fleiss's kappa \cite{landiskoch}. Cohen's kappa can be used when there are two raters or in this case two annotations of one solar image group by the same annotator. Fleiss's kappa is used when more than two raters exist or the raters are not deliberately chosen but selected from a population at random. 
+
+Cohen's kappa is defined as 
+\[\kappa = \frac{p_o - p_e}{1-p_e} \] where $p_o$ is the relative agreement among raters and $p_e$ is the hypothetical chance agreement. $p_o$ is thus analogous to accuracy and in this case is interpreted as the number of pixels the annotator labeled the same between sessions. $p_e$ provides context for $p_o$ is calculated in the binary label class as the sum of the random chance of labeling true $p_t$ and the random chance of labeling false $p_f$. In turn, $p_t$ is the percentage of pixels labeled with a given class out of the total for each trial and $p_f$ is similarly defined. With more categories, it is the sum of chance of labeling a category as something other than agreed between sessions. Cohen's kappa can be interpreted as shown in Table \ref{tab:cohens} \cite{cohens}.
 
 \begin{table}[ht!]
-\centering
- \begin{tabular}{||c m{0.5\textwidth}||} 
- \hline
- Name & Description \\
-   \hline\hline
-   Active regions & Complexes of brighter and darker regions in UV observations caused by the solar magnetic field piercing through the solar atmosphere \\ \hline \\
-   Filaments & A suspension of material high in the solar atmosphere by magnetic arches\\ \hline \\
-   Prominences & A filament observed off the disk of the Sun \\ \hline \\
-   Coronal holes & Regions where the magnetic field is open with no clear reconnection back into the Sun which allow fast outflow of material \\ \hline \\
-   Flares & A sudden brightening on the Sun \\ \hline \\
-   Coronal mass ejection & An event when the Sun dispels mass and charged particles, sometimes towards Earth \\ \hline \\
-   Sigmoids & S-shaped structures on the surface of the Sun thought to be precursors to flares \\ \hline \\
-   Quiet corona & Parts of the Sun devoid of activity \\ 
- \hline
- \end{tabular}
- \caption{Annotator consistency: For each annotator and image, the number of inconsistenceies per label is shown.  \todo{fill in table!}}
- \label{tab:annotatorconsistency}
+  \centering
+  \begin{tabular}{|c c c|}
+  \hline    
+$\kappa$ range &  Agreement interpretation & \% of data that are reliable \\
+\hline \hline
+0-.20	& None &	0-4\% \\
+.21–.39	& Minimal &	4-15\% \\
+.40–.59 & Weak & 15-35\% \\
+.60–.79	& Moderate & 35-63\% \\
+.80–.90 & Strong &64-81\% \\
+$>.90$  & Almost Perfect	& 82-100\% \\
+\hline
+  \end{tabular}
+  \caption{Interpretation of Cohen's kappa coefficient for agreement \cite{cohens}}
+  \label{tab:cohens}
 \end{table}
 
-\subsubsection{Agreement among annotators} \label{sec:agreement}
-Further, there is no universally agreed upon definition for each labeling class. Some cases are obvious, e.g. outer space. However, there are times where it is unclear which label to apply, for example a filament versus a coronal hole, or where exactly the boundary of the label should be drawn, for example which portions consist of active regions. The labeled database gives data-driven insight on where solar physics experts disagree. The disagreement may be amplified if experts from different research institutions or very different research focus are selected. 
-
-\todo{complete analysis}
-
-The agreement can be quantified using Fleiss's kappa \cite{landiskoch}:
-\[ \kappa = \frac{\overline{P} -    \overline{P_e}}{1-\overline{P_e}} \] where $\overline{P} - \overline{P_e}$ quantifies actual observed agreement above chance and $1 - \overline{P_e}$ quantifes attainable agreement above chance. These terms are calculated where $N$ is the number of pixels, $n$ is the number of ratings per pixel, and $k$ is the number of classes each pixel can be assigned. Each pixel is index $i = 1, 2, ..., N$ and each class is indexed $j = 1, 2, ..., k$. Then, $n_{ij}$ is the number of annotators who labeled the $i$-th pixel with class $j$. 
+Fleiss's kappa is defined as \[ \kappa = \frac{\overline{P} -    \overline{P_e}}{1-\overline{P_e}} \] where $\overline{P} - \overline{P_e}$ quantifies actual observed agreement above chance and $1 - \overline{P_e}$ quantifies attainable agreement above chance. These terms are calculated where $N$ is the number of pixels, $n$ is the number of ratings per pixel, and $k$ is the number of classes each pixel can be assigned. Each pixel is index $i = 1, 2, ..., N$ and each class is indexed $j = 1, 2, ..., k$. Then, $n_{ij}$ is the number of annotators who labeled the $i$-th pixel with class $j$. 
 
 \begin{align*}
 p_j &= \frac{1}{Nn} \sum_{i=1}^{N} n_{ij} \\
@@ -644,11 +652,106 @@ $<$ 0 & No agreement \\
 0.80 - 1.00 & Almost perfect agreement \\
 \hline
   \end{tabular}
-  \caption{Interpreation of Fleiss's kappa coefficient for agreement}
+  \caption{Interpretation of Fleiss's kappa coefficient for agreement}
   \label{tab:fleiss}
 \end{table}
 
-\todo{perform analysis}
+Since each annotator labeled twice, Cohen's kappa was used here as shown in Table \ref{tab:annotatorconsistency}. 
+
+
+
+\begin{table}[ht!]
+\centering
+ \begin{tabular}{|c |c c c c c c c c c c | c|} 
+ \hline
+\textbf{A} & BR & CH & EOS & FIL & FLA & limb & PR & QS & SOS & UL & Sum \\ \hline
+BR & 115923 & 0 & 4051 & 550 & 351 & 2363 & 1051 & 25379 & 0 & 0 & 149668\\
+CH & 25 & 138006 & 222 & 4526 & 0 & 12361 & 0 & 44810 & 0 & 0 & 199950\\
+EOS & 5758 & 11 & 6829470 & 0 & 0 & 0 & 2369 & 0 & 0 & 0 & 6837608\\
+FIL & 815 & 6400 & 183 & 8415 & 0 & 548 & 1412 & 4105 & 0 & 0 & 21878\\
+FLA & 567 & 0 & 0 & 0 & 231 & 19 & 0 & 0 & 0 & 0 & 817\\
+limb & 3585 & 6258 & 0 & 100 & 0 & 229637 & 2441 & 334 & 0 & 0 & 242355\\
+PR & 98 & 0 & 6627 & 0 & 0 & 6311 & 13417 & 4 & 0 & 0 & 26457\\
+QS & 58507 & 47494 & 0 & 9850 & 14 & 0 & 0 & 2229489 & 0 & 0 & 2345354\\
+SOS & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+UL & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 6312 & 0 & 0 & 6313\\ \hline
+Sum & 185279 & 198169 & 6840553 & 23441 & 596 & 251239 & 20690 & 2310433 & 0 & 0 & \\
+ \hline
+ \end{tabular}
+ \caption{Annotator A's consistency: This table details Annotator A's labelings for each class. The rows indicate one session and the columns another. Thus, column CH and row FIL with a value of 6400 indicate that in one session Annotator A labeled 6400 pixels as coronal hole and in the other session as filament. The classes have been abbreviated as follows: bright region is BR, coronal hole is CH, empty outer space is EOS, filament is FIL, flare is FLA, limb is limb, prominence is PR, quiet Sun is QS, structured outer space is SOS, and unlabeled is UL. As seen here, Annotator A did not use the structured outer space label and did leave some pixels unlabeled.}
+ \label{tab:annotatora}
+\end{table}
+
+\begin{table}[ht!]
+\centering
+ \begin{tabular}{|c |c c c c c c c c c c | c|} 
+ \hline
+\textbf{B} & BR & CH & EOS & FIL & FLA & limb & PR & QS & SOS & UL & Sum \\ \hline
+BR & 80107 & 605 & 3094 & 280 & 94 & 2474 & 141 & 41576 & 0 & 0 & 128371\\
+CH & 227 & 319404 & 2613 & 0 & 0 & 19069 & 0 & 58172 & 0 & 0 & 399485\\
+EOS & 1954 & 447 & 10256024 & 0 & 0 & 0 & 8498 & 0 & 150 & 0 & 10267073\\
+FIL & 3101 & 0 & 0 & 12366 & 0 & 8 & 186 & 13238 & 0 & 0 & 28899\\
+FLA & 570 & 0 & 0 & 0 & 573 & 0 & 0 & 31 & 0 & 0 & 1174\\
+limb & 1012 & 15889 & 0 & 0 & 0 & 331215 & 10019 & 0 & 0 & 0 & 358135\\
+PR & 0 & 92 & 3677 & 0 & 0 & 5229 & 29701 & 273 & 0 & 0 & 38972\\
+QS & 30045 & 73408 & 0 & 7160 & 0 & 0 & 518 & 3411629 & 0 & 0 & 3522760\\
+SOS & 0 & 0 & 141 & 0 & 0 & 0 & 0 & 0 & 590 & 0 & 731\\
+UL & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+Sum & 117016 & 409845 & 10265549 & 19806 & 667 & 357995 & 49063 & 3524919 & 740 & 0 &\\
+ \hline
+ \end{tabular}
+ \caption{Annotator B's consistency: This table details Annotator B's labelings in the same format as Table \ref{tab:annotatora}.}
+ \label{tab:annotatorb}
+\end{table}
+
+\begin{table}[ht!]
+\centering
+ \begin{tabular}{|c c c|} 
+ \hline
+ Class & Annotator A & Annotator B \\
+   \hline\hline
+Empty outer space & 0.996 & 0.997 \\
+Structure outer space & N/A & 0.802 \\
+Bright region & 0.687 & 0.650 \\
+Filament & 0.370 & 0.507 \\
+Prominence & 0.568 & 0.674 \\
+Coronal hole & 0.687 & 0.783 \\ 
+Quiet Sun & 0.945 & 0.958 \\
+Limb & 0.929 & 0.923 \\
+Flare & 0.327 & 0.622 \\ \hline
+Overall & 0.941 &  0.956\\
+ \hline
+ \end{tabular}
+ \caption{Annotator consistency: For each annotator and image, Cohen's kappa for each class is shown. Annotator B is more consistent for each class. The overall agreement is skewed by the large number of outer space pixels. Annotator A has no agreement score for structured outer space because the label was disregarded.}
+ \label{tab:annotatorconsistency}
+\end{table}
+
+From Table \ref{tab:annotatorconsistency}, it is clear that labeling filaments is very difficult. Oddly, flares, which were anticipated to be simple were inconsistent as well. However, by looking at Tables \ref{tab:annotatora} and \ref{tab:annotatorb} it's clear that the inconsistency is not in  identifying them but drawing the appropriate boundary. Since there are so few pixels, bleeding over into the surrounding bright region or being too limited in the boundary has a huge skew. Classes that are fairly automatic like empty outer space and limb, where suggestion is provided in the annotating software, have high agreement. 
+
+\subsubsection{Agreement among annotators} \label{sec:agreement}
+Further, there is no universally agreed upon definition for each labeling class. Some cases are obvious, e.g. outer space. However, there are times where it is unclear which label to apply, for example a filament versus a coronal hole, or where exactly the boundary of the label should be drawn, for example which portions consist of active regions. The labeled database gives data-driven insight on where solar physics experts disagree. The disagreement may be amplified if experts from different research institutions or very different research focus are selected. 
+
+In this labeling, Annotator A did not use the structured outer space class. However, it is a rare class, and they chose to skip the image group that Annotator B labeled substantial structured outer space. 
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.35]{g20170619060208}
+    \includegraphics[scale=0.1]{g20170619060208-0b}
+    \caption{{\bf Structured outer space discrepancy} At left is the 30.4 nm image for Group 6. Very faintly in the upper left, some structure is visible in outer space as a CME moves outward. This is only seen in the 30.4 passband. Thus, if Annotator A had chosen to label this image they may or may not have missed this class.} 
+    \label{fig:sos}
+ \end{center}
+\end{figure}
+
+\begin{figure}[ht]
+  \begin{center}
+  	\includegraphics[scale=0.1]{g20170415000148-a}
+    \includegraphics[scale=0.35]{g20170415000148}
+    \includegraphics[scale=0.1]{g20170415000148-b}
+    \caption{{\bf Inter-Annotator disagreement} Group 1 provides a key example for disagreement among annotators.Annotator A is shown at left while Annotator B is shown at right. In the center, is the three-color image of the Sun at that time. Annotator A identified smaller coronal holes than Annotator B and included a filament Annotator B did not. This filament is not seen in \halpha but does look rather strong in the EUV three-color. In general, they identifies the same features but with different boundaries.} 
+    \label{fig:annotatordifference}
+ \end{center}
+\end{figure}
+
+
 
 
 
