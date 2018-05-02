@@ -11,6 +11,7 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{minted}
 %% Rotate tables and figures
 \usepackage{rotating}
 %% Used for TODO items
@@ -58,6 +59,7 @@
 
 \newcommand{\halpha}{H$\alpha$\,}
 \newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
+\newcommand{\code}[1]{\mintinline{python}|#1|}
 
 %\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 %\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
@@ -112,8 +114,6 @@ Williamstown, Massachusetts\\
 The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R series satellites collect continuous, high-quality imagery of the Sun in six wavelengths. SUVI imagers produce at least one image every 10 seconds, or 8,640 images per day, considerably more data than observers can digest in real time. Over the projected 20-year lifetime of the four GOES-R series spacecraft, SUVI will provide critical imagery for space weather forecasters and produce an extensive but unwieldy archive. In order to condense the database into a dynamic and searchable form we have developed solar thematic maps, maps of the Sun with key features, such as coronal holes, flares, bright regions, quiet corona, and filaments, identified. Thematic maps will be used in NOAA’s Space Weather Prediction Center to improve forecaster response time to solar events and generate several derivative products. Likewise, scientists use thematic maps to find observations of interest more easily and guide experiments. 
 
 Using a naive Bayesian classifier, a random forest, and a neural network, we create thematic maps in real-time. We created software to collect expert classifications of solar features based on SUVI images. Using this software, we compiled a database of expert classifications. These are used to establish experimental limits on human performance. Given new images, the classifiers assign each pixel the most appropriate label according to the trained distribution. Here we describe the software to collect expert training and the successes and limitations of the classifier. These results are promising and encourage future research into an ensemble classification approach and solar weather prediction with similar methods.
-
-This abstract will be updated throughout the thesis process.
 
 \chapter*{Acknowledgments}
 I'd like to thank Dan Seaton and Jon Darnel for guiding me during this project and supplying data and annotations.  I'd like to thank Jay Pasachoff for his support in solar physics and discovery of this project. And, I'd like to thank Jon Park for helping me organize and embark on an independent thesis.
@@ -596,8 +596,7 @@ In a single static image, it is difficult to label all the features because they
 \subsubsection{Iterated improvements}
 While this software is not complicated, it was not the first approach. In the very first approach, the image was automatically segmented into super-pixels using the Simple Linear Iterative Clustering (SLIC) segmentation algorithm \cite{SLIC}. Drawing boundaries is more time consuming than simply clicking an region of the image. SLIC was used in the hopes of producing more labeled images. However, it systematically over/under segmented specific classes, making their boundaries consistently too large or small, and did not consistently segment filaments. It instead lumped the structure into a larger superpixel with other classifications. 
 
-This approach would render the annotated database full of biases that would be difficult to correct. Effectively, the machine learning approaches used here would approximate the segmentation algorithm instead a gold-standard human definition. Thus, SLIC was abandoned and annotators denoted boundaries with a set of points that were individually clicked. Eventually, the current drawing approach was reached. It most effectively simulates the act of hand-drawing labeled maps by space weather forecasters used at NOAA today. 
-
+This approach would render the annotated database full of biases that would be difficult to correct. Effectively, the machine learning approaches used here would approximate the segmentation algorithm instead a gold-standard human definition. Thus, SLIC was abandoned and annotators denoted boundaries with a set of points that were individually clicked. Eventually, the current drawing approach was reached. It most effectively simulates the act of hand-drawing labeled maps by space weather forecasters used at NOAA today. The current version of the annotation software is available at the \href{https://github.com/jmbhughes/smachy}{author's Github}. 
 \subsection{Analysis of labeled data}
 Since this is the first digitally collected dataset of human solar annotations for multiple classes, it brings the opportunity to establish baseline metrics for human performance on the task of solar image segmentation. 
 
@@ -805,7 +804,7 @@ A third annotator submitted only a handful of images, however they provide an in
  \end{center}
 \end{figure}
 
-Some of the annotator disagreement noted in Section \ref{sec:agreement} and Table \ref{tab:annotatoragreement} for bright regions stems from the size of bright regions labeled.     Annotator A tends to draw a larger boundary including the cascades of loops. Annotator B was a bit more conservative and only included the brighter regions of the cascades. Annotator C was the most conservative and only included the bright core. Along those same lines, Annotator C left a gap between the flare and surrounding bright region. The upper left bright regions were only sometimes separated even though a clear gap divides them. It appears Annotator C was also uncertain about the southernly coronal hole and chose to leave it unlabeled. However, they did identify another coronal hole that was not labeled by any others. The southern filament was only identified half the time. Annotators A and C agreed that the upper left dark region was a coronal hole while Annotator B decided it was filament. Upon further examination there is no filament visible in \halpha here so it likely is coronal hole. This may be why Annotator B also left it as quiet Sun. Prominences were very inconsistently labeled. This likely stems from them only being visible in 30.4 nm with special attention. Thus, a quick labeling may overlook some. Annotator A identified a spicule as a prominence in trial one. This potentially argues for another category for spicules or other "extra" features. 
+Some of the annotator disagreement noted in Section \ref{sec:agreement} and Table \ref{tab:annotatoragreement} for bright regions stems from the size of bright regions labeled. Annotator A tends to draw a larger boundary including the cascades of loops. Annotator B was a bit more conservative and only included the brighter regions of the cascades. Annotator C was the most conservative and only included the bright core. Along those same lines, Annotator C left a gap between the flare and surrounding bright region. The upper left bright regions were only sometimes separated even though a clear gap divides them. It appears Annotator C was also uncertain about the southernly coronal hole and chose to leave it unlabeled. However, they did identify another coronal hole that was not labeled by any others. The southern filament was only identified half the time. Annotators A and C agreed that the upper left dark region was a coronal hole while Annotator B decided it was filament. Upon further examination there is no filament visible in \halpha here so it likely is coronal hole. This may be why Annotator B also left it as quiet Sun. Prominences were very inconsistently labeled. This likely stems from them only being visible in 30.4 nm with special attention. Thus, a quick labeling may overlook some. Annotator A identified a spicule as a prominence in trial one. This potentially argues for another category for spicules or other "extra" features. 
 
 Overall, there are a few types of disagreements:
 \begin{itemize}
@@ -817,14 +816,18 @@ Overall, there are a few types of disagreements:
 \subsection{Labeled database}
 Ideally, the labeled database would be compiled with input from all annotators. However, only Annotators A and B consistently submitted labeled images. Therefore, there is no third vote to break ties when they have disagreements. Picking a label at random for each pixel when there is a disagreement would result in a very pixelated image, for example when it is unclear whether a feature is a filament or coronal hole the feature would be a mess of pixels switching between coronal hole and filament with quiet Sun on boundary disagreements. This would create a poor gold standard database.
 
-Instead, when there are multiple annotators or trials for an image, one is selected at random as the gold standard. This incorporates definitions from all annotators and should spread out and hopefully eliminate systematic biases by preferencing one annotator's definition. 
+Instead, when there are multiple annotators or trials for an image, one is selected at random as the gold standard. This incorporates definitions from all annotators and should spread out and hopefully eliminate systematic biases by preferencing one annotator's definition. The database is currently available upon request but will subsequently be made available online at the author's website. 
+
+The database was divided in half, a training set and a labeling set, for the machine learning goals. For more details, see Section \ref{sec:evaluationmethods}. 
 
 
 \chapter{Classifiers} \label{ch:classifiers}
 
-In best conditions, a deep learning approach such as a convolutional neural network would be used because in other computer vision applications they have greatly outperformed other machine learning techniques. However, they require large amounts of training data. Therefore, this chapter introduces the machine learning techniques used. Instead of treating the images as a collection of individual pixels as described in the related work (Chapter \ref{ch:relatedwork}) or in a convolutional sense, these classifiers use neighborhoods of multichannel pixels. The neighborhood of neighborhood of $(x_0, y_0)$ is $\{(x_i, y_i) | x_0 - w \le x_i \le x_0 + w, y_0 - h \le y_i \le y_0 + h\}$  where $w$ and $h$ are the number of pixels on either side of the reference pixel $(x_0, y_0)$ used in the horizontal and vertical dimension respectively. Each multichannel pixel is a $m \times 1$-dimension column vector where each entry corresponds to a spectral passband or derived channel. The derived channels are ratios of spectral passbands or spatial information but could be extended to any type of feature. The goal is to assign each multichannel pixel a label from Table \ref{tab:mylabels}. 
+In best conditions, a deep learning approach such as a convolutional neural network would be used because in other computer vision applications they have greatly outperformed other machine learning techniques. However, they require large amounts of training data. Therefore, this chapter introduces the machine learning techniques used. 
 
-The implementations of the 
+Instead of treating the images as a collection of individual pixels as described in the related work (Chapter \ref{ch:relatedwork}) or in a convolutional sense, these classifiers use neighborhoods of multichannel pixels, an compromise between the two approaches. The neighborhood of neighborhood of $(x_0, y_0)$ is $\{(x_i, y_i) | x_0 - w \le x_i \le x_0 + w, y_0 - h \le y_i \le y_0 + h\}$  where $w$ and $h$ are the number of pixels on either side of the reference pixel $(x_0, y_0)$ used in the horizontal and vertical dimension respectively. Each multichannel pixel is a $m \times 1$-dimension column vector where each entry corresponds to a spectral passband or derived channel. The derived channels are ratios of spectral passbands or spatial information but could be extended to any kind of value represented as a matrix of values the same size as the input images, in this case 1280x1280 pixels. The goal is to assign each multichannel pixel a label from Table \ref{tab:mylabels}. 
+
+
 \section{Naive Bayesian Maximum Likelihood}
 
 This approach mimics the maximum likelihood estimation of \cite{rigler:2012} described in Section \ref{sec:riglermaxlikelihood}. It is modified for pixel neighborhoods. If $w=h=0$, this model is identical to \cite{rigler:2012}. 
@@ -863,17 +866,56 @@ The random forest is an ensemble of decision tree classifiers and are used in a 
 Another benefit of the random forest is its ability to indicate what features are most important for classification. This is briefly explored in Section \ref{sec:rforestfeatures}. 
 
 \section{Feed-forward Neural Network}
-A simple fully-connected feed forward network is employed here consisting of three densely connected hidden layers with an input layer with similar neighborhood inputs and an output layer for classes. The hidden layers had 16, 16, and 8 nodes \todo{change to optimal} each with relu activation. They were trained for \todo{this many} epochs with a batch size of \todo{this many}. 
+An artificial neural network is a network of nodes and weights. The neural network takes inputs with a node for each input type. These inputs are transformed and passed onto layers of intermediate nodes. Each node has an activation function. The inputs are combined with different weights through a transfer function. The combined input is then compared via an activation function to an activation threshold. If the combined input is strong enough the node activates and passes a transformed value along to subsequent nodes in the next layer. These propogate forward to an output layer that provides the labeled class. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.5]{ffneural}
+    \caption{{\bf An example neural network construction}: This helpful graphic shows the general layout of a feedforward neural network. The number of nodes and hidden layers may vary. The size of the input layer is determined by the input features, and the output size is determined by the classification task \cite{neuralexample}.}
+ \end{center}
+\end{figure}
+
+A simple fully-connected feed forward network is employed here consisting of three densely connected hidden layers with an input layer with similar neighborhood inputs and an output layer for classes. The hidden layers had 16, 16, and 8 nodes each with relu activation. 
 
 \section{Convolutional Neural Network}
-A convolutional neural network was attempted with the expectation of poor results because of insufficient training. The system was based on the Fully Convolutional Neural Network appraoch by Long, Shelhamer, \& Darrell (2015) \cite{fcnn}, a method to take arbitrarily sized image input and create similarly sized image output with classification labels. The specific implementation used was a modification of Sarath Shekkizar's Tensorflow implementation \cite{fcnntensorflow}. This approach was intialized with VGG-16 pretrained model, although it's unclear if this training helps for solar image segmentation as well. 
+A convolutional neural network was attempted with the expectation of poor results because of insufficient training. The system was based on the Fully Convolutional Neural Network appraoch by Long, Shelhamer, \& Darrell (2015) \cite{fcnn}, a method to take arbitrarily sized image input and create similarly sized image output with classification labels. The specific implementation used was a modification of Sarath Shekkizar's Tensorflow implementation \cite{fcnntensorflow}. This approach was intialized with VGG-16 pretrained model, although it's unclear if this training helps for solar image segmentation as well.
+
+\chapter{Software package} 
+
+This chapter details how the software is designed and how future features can be included. The codebase is available at the \href{https://github.com/jmbhughes/smachy}{author's Github}. 
+
+\section{Overview}
+The software is available via Github in a Python package called "Smachy" for \textit{solar machine learning in Python}. It consists of a few modules to partition the code: \code{gui}, \code{filter}, \code{train}, \code{classify}, \code{evaluate}, and \code{config}. The \code{gui} module contains the annotation software. The \code{filter} module provides support for creating derivative images such as entropy images and ratios of EUV images. The \code{train} module organizes the training objects for the various classes and provides a \code{TrainingLoader} class for ease of use. The \code{classify} module performs solar image classification using the aforementioned classifiers. Evaluation is done through the \code{evaluate} module and provides support for performance metrics and confusion matrices. Finally, the \code{config} module defines global configuration parameters such as label mapping. This will eventually be moved to a json configuration file. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.3]{codebase}
+    \caption{{\bf Code layout}: A outline of the major classes in each module of \code{smachy} }
+    \label{fig:codebase}
+ \end{center}
+\end{figure}
+
+\section{Data structuring}
+
+\section{Annotation GUI}
+
+\section{Trainers}
+
+\section{Classifiers}
+The implementations of the classifiers was done in a polymorphic fashion so that they can be exchanged easily when running and evaluating performance. Each classifier is designed 
+
+\section{Filters}
+
+\section{Evaluator}
+
+
 
 \chapter{Experiments and Results} \label{ch:experiments}
 
 This chapter describes various experiments performed on the data and the conclusions derived while working toward the optimal machine learning solar image classifier, most importantly it explores feature selection. It begins by introducing the methods of evaluation in Section \ref{sec:evaluationmethods} and then proceeds through the experiments. 
 
 \section{Evaluation approaches}\label{sec:evaluationmethods}
-The database of annotated images was broken into two categories: a training set and a testing set. Fourteen images were used in training and Thirteen were used for testing. These were randomly selected so that no observational time was biased. The classifiers in the experiments are trained solely on the images in the training set and only exposed to the testing set for evaluation. 
+The database of annotated images was broken into two categories: a training set and a testing set. Fourteen images were used in training and thirteen were used for testing. These were randomly selected so that no observational time was biased. The classifiers in the experiments are trained solely on the images in the training set and only exposed to the testing set for evaluation. 
 
 \subsection{Qualitative}
 For each experiment, the generated thematic maps from the trained classifiers are qualitatively compared to the testing images. Several qualities are inspected:
@@ -886,12 +928,20 @@ For each experiment, the generated thematic maps from the trained classifiers ar
 \end{itemize}
 
 \subsection{Standard machine learning metrics}
-In addition to qualitative inspection, the testing set and classifier generated results are compared quantitatively. 
+In addition to qualitative inspection, the testing set and classifier generated results are compared quantitatively. For each class several several statistics are calculated based on true positive count (TP), true negative count (TN), false positive count (FP), and false negative count (FN). For a given clas label, TP is the number of pixels classified with that class and the gold standard database agreed. On the other hand, FP is the number of pixels classified with that class when the gold standard database disagreed. Similarly, TN is number of times the classifier correctly did not assign the class and FN is when the classifier labeled a class other than the designated class. From these values, several metrics of performance are derived. One of the more widely known metrics is accuracy, how often a classifier is correct:
+\[\text{accuracy} = \frac{TP + TN}{TP + TN + FP + FN}\] However, accuracy is not as helpful when classes are skewed, for example flares are very uncommon so never using the label of flare trivially optimizes accuracy. Other metrics are more revealing in this case. Precision is defined as:
+\[ \text{precision} = \frac{TP}{TP + FP} \]
+It measures the ability of the classifier to not label a pixel the given class when it is not. Recall is another metric that characterizes the classifier's ability to identify all pixels of a given class:
+\[\text{recall} = \frac{TP}{TP + FN}\]
+Both precision and recall are important but are often anti-correlated. The f1 score combines them:
+\[\text{f1} = \frac{2 \times \text{precision} \times \text{recall}}{\text{precision} + \text{recall}}\]
+
 
 \subsection{Confusion matrix}
+The aforementioned metrics do not indicate 
 \begin{figure}[ht]
   \begin{center}
-    includegraphics[scale=0.8]{placeholder.jpg}
+    \includegraphics[scale=0.8]{placeholder.jpg}
     \caption{{\bf An example confusion matrix}: A confusion matrix is a method of showing accuracy of classifying each label. On the vertical axis the correct label is shown while on the horizontal axis the annotator's label is shown \todo{check that this is correct orientation}. Then, looking at the cell defined shows the percentage of labels in that region. Ideally, the diagonal should be 1 indicating every feature was labeled with the correct label always. }
     \label{fig:exampleconfusionmatrix}
  \end{center}
@@ -899,6 +949,8 @@ In addition to qualitative inspection, the testing set and classifier generated 
 
 
 \section{Baseline results}
+
+\section{Line ratios}
 
 \section{Normalization of data}
 \todo{copy from notes}
@@ -978,7 +1030,8 @@ Despite their accessibility, they are difficult to use as a training database an
 In the meantime, a more realistic goal is for forecasters to make a daily drawing using the annotation software. This is being pursued through a more accessible online tool with a funding proposal in the process of submission. 
 
 \subsection{Prediction}
-Potentially the most interesting and beneficial avenue for development is transitioning the classification paradigm to a prediction paradigm. 
+Potentially the most interesting and beneficial avenue for development is transitioning the classification paradigm to a prediction paradigm. There are many systems that predict solar flares within one to two days with fair success with machine learning techniques such as Bayesian methods \cite{predict1} and support vector machines \cite{predict2}. However, these systems are still far from satisfactory: "To date, various systems and models designed to predict the occurrence of solar flares have made significant progress, but the achieved prediction performances are far from what is required by operations teams" \cite{predict3}. Attempts at using CNNs have not been as successful, potentially because of insufficient data \cite{predict4}. However, that model is based off of sunspot counts instead of imagery. Using the approaches presented here with an added time domain and solar flare prediction label could be very productive. The annnotated data set in this thesis was too sparse for an investigation into prediction. 
+
 \section{Summary}
 
 
