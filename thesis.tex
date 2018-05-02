@@ -56,7 +56,10 @@
 %             footskip=50pt]
 %            {geometry}
 \usepackage{xargs}
-
+\usepackage{listings}
+\lstset{
+   breaklines=true,
+   basicstyle=\ttfamily}
 \newcommand{\halpha}{H$\alpha$\,}
 \newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
 \newcommand{\code}[1]{\mintinline{python}|#1|}
@@ -116,7 +119,7 @@ The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R serie
 Using a naive Bayesian classifier, a random forest, and a neural network, we create thematic maps in real-time. We created software to collect expert classifications of solar features based on SUVI images. Using this software, we compiled a database of expert classifications. These are used to establish experimental limits on human performance. Given new images, the classifiers assign each pixel the most appropriate label according to the trained distribution. Here we describe the software to collect expert training and the successes and limitations of the classifier. These results are promising and encourage future research into an ensemble classification approach and solar weather prediction with similar methods.
 
 \chapter*{Acknowledgments}
-I'd like to thank Dan Seaton and Jon Darnel for guiding me during this project and supplying data and annotations.  I'd like to thank Jay Pasachoff for his support in solar physics and discovery of this project. And, I'd like to thank Jon Park for helping me organize and embark on an independent thesis.
+I'd like to thank Dan Seaton and Jon Darnel for guiding me during this project and supplying data and annotations.  I'd like to thank Jay Pasachoff for his support in solar physics and discovery of this project. And, I'd like to thank Jon Park for helping me organize and embark on an independent thesis. I'd like to thank all the aforementioned individuals again for reading the thesis and providing feedback as well as the rest of the Williams College computer science faculty. 
 
 \chapter{Introduction}
 \section{Motivation}
@@ -564,7 +567,7 @@ Twenty-seven image groupings of the SUVI six-band imagery were used for the labe
 
 Four annotators were asked however only one (Annotator B) provided a complete annotation of every image. One (Annotator A) provided a nearly complete sample. Another (Annotator C) provided only an image. The last withdrew from the project. 
 
-\subsection{Annotating Software}
+\subsection{Annotating Software}\label{sec:annotatesoftware}
 In general, a solar annotation tool requires the following features:
 \begin{itemize}
 \item automatic solar coordinate alignment 
@@ -889,25 +892,63 @@ The software is available via Github in a Python package called "Smachy" for \te
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.3]{codebase}
+    \includegraphics[scale=0.35]{codebase}
     \caption{{\bf Code layout}: A outline of the major classes in each module of \code{smachy} }
     \label{fig:codebase}
  \end{center}
 \end{figure}
 
 \section{Data structuring}
+\textit{Flexible Image Transport System} or FITS is the standard image format for astronomical and solar images. The input solar images as well as any derived images are stored in this format. It has the benefit of providing convenient support for varied meta-data. For example, the annotated images have additional meta-data that indicates which images they were labeled using. All the channel names used in annotating are listed in a pipe-delimited entry under the keyword \code{CHANNELS}. Then, each channel name has an associated keyword with a relative path to the precise image used, in example \code{C131} might map to \code{131/NCEI_SUVI_COMPOSITE_131_G16_20170908_000148_v_0_2_0.fits}. The annotated image is an image of integer values where each integer corresponds to a label. The order of these integers is stored in the meta-data under the \code{CLASSES} keyword in case it is ever changed within the software. For example, the \code{CLASSES} entry may be:
+\begin{lstlisting}
+unlabeled|empty_outer_space|structured\outer_space|bright_region|filament|prominence|coronal_hole|quiet_sun|limb|flare
+\end{lstlisting}
+This can be split on the pipe and indicates that values of 0 map to \code{unlabeled}, values of 1 map to \code{empty_outer_space}, values of 2 map to \code{structured_outer_space}, and so forth sequentially. 
+
+Thus, an annotated image can be opened to recover which solar images are associated with a multichannel image group. Alternatively, the group database, an HDF5 databse, also includes this data. The group database is generated first and handed to various portions of the software so it knows which images to open for analysis or annotation. This database is often called \code{groups.h5}. It retains when it was calculated as well as the path to the directory of images. Then, the \code{groups} entry contains a dictionary of each group. A group is given an unique designator starting with "g" based upon the observation time. For example, "g20170401000218" indicates the group is for April 1, 2017 at 00:02:18. The entry for the group then contains the relative paths for images associated with it: 
+\begin{minted}{python}
+'g20170401000218': 
+    {'files': 
+        {'c131': '131/NCEI_SUVI_COMPOSITE_131_G16_20170401_000143_v_0_2_0.fits',
+        'c171': '171/NCEI_SUVI_COMPOSITE_171_G16_20170401_000303_v_0_2_0.fits',
+        'c195': '195/NCEI_SUVI_COMPOSITE_195_G16_20170401_000213_v_0_2_0.fits',
+        'c284': '284/NCEI_SUVI_COMPOSITE_284_G16_20170401_000333_v_0_2_0.fits',
+        'c304': '304/NCEI_SUVI_COMPOSITE_304_G16_20170401_000133_v_0_2_0.fits',
+        'c94': '94/NCEI_SUVI_COMPOSITE_94_G16_20170401_000233_v_0_2_0.fits',
+        'chalpha': 'halpha/gong_6567_20170401_000130.fits'},
+   'timespread': 123.0},
+\end{minted}
+This groups database can be automaticallly generated by using the provided \code{build_file_databases.py} script with commandline argument of directory path to images. Then, each channel should be separated into subdirectories of the desired channel name. The script will create $n$ groups where $n$ is the smallest number of images in any channel. It will then greedily pick other images such that the group has the smallest spread over observation time. 
 
 \section{Annotation GUI}
+The annotation GUI's functionality is described in Section \ref{sec:annotatesoftware}. It is implemented in Tkinter in Python. In hindsight, this was not the best decision because Tkinter appears differently on different operating systems. Even more importantly, since it was part of the \code{smachy} package it required installation of various dependencies to run. Annotators were given installation scripts and instructions to use virtual environments, but it still was ultimately more complicated than a more portable, stand-alone Python program, a very portable Java JAR, or a web application. 
+
+To make matters even easier, two execution scripts for the GUI are provided. The first \code{run_gui.py} requires very specific input regarding which image group to annotate, where to save, and other flags that can be accessed through the commandline help menu. Since annotators would be using the same directory structurinig, an easier script \code{easy_gui.py} was provided. It defaulted all the parameters and could be run without designating any flags. It expects to be run in a directory containing a \code{groups.h5}, a directory of images, and a directory called \code{labeled} of annotated images. It will run until every group in the groups database has the requested number of annotated images. 
 
 \section{Trainers}
+The \code{train} module implements a generic \code{Trainer} with some helper methods and abstract methods required to be implemented in any specific \code{Trainer}. A \code{Trainer} takes input of a list of annotated images, a dictionary of the paths to images associated with the annotated images, list of labels to classify on, and a list of image channels to utilize. Determining these paramters is made easy with the \code{TrainingLoader} class. The \code{Trainer} then provides helper functions to access pixels associated with any label. Any specific \code{Trainer} must implement a \code{train()} method and a \code{make_classifier()} method. Train does the specific training routine for that kind of classifier and sets up the appropriate data structures. \code{make_classifier()} calls the associated \code{Classifier} object and returns it with the trained parameters. 
+
+Training is done with the appropriate \code{train_*.py} script, for example \code{train_bayesian.py} for the Bayesian model. The required inputs and outputs are described in the commandline help accessible with the \code{-h} flag. To do training en masse, \code{train_all.sh} runs all all the specific training scripts with specified inputs. 
+
+Thus, to add a new trainer inherit the generic \code{Trainer} and implement a specific training script in the same fashion as one of the existing scripts. 
 
 \section{Classifiers}
-The implementations of the classifiers was done in a polymorphic fashion so that they can be exchanged easily when running and evaluating performance. Each classifier is designed 
+The implementations of the classifiers was done in a polymorphic fashion so that they can be exchanged easily when running and evaluating performance. Each classifier is designed to include the following methods:
+\begin{itemize}
+\item \code{classify_pixel}: Given a single pixel's feature set, classify it 
+\item \code{classify_image}: Iterates over an entire image and performs classification
+\item \code{save}: saves a classifier to a Python serialized file
+\item \code{load}: loads a classifier from a Python serialized file
+\end{itemize}
+The parent \code{Classifier} class also provides helper methods to load essential data. 
+
+Similar to training, there are specific classifier scripts for running and a \code{classify_all.sh} to run them all. To add a new \code{Classifier} inherit the generic one and provide model specific classification methods as well as a way to save and load. Then, provide a classification script, and it should run. 
 
 \section{Filters}
+More complicated features than raw data values are desirable. The \code{filter} module provides support for generating output images. The main \code{Filter} class provides support for opening and saving an image/derived image as well as a general purpose \code{process} method. This \code{process} method utilizes the \code{_filter} method to process a single group in a group database. The \code{filter} method is implemented separately in every subclass. For example, the \code{RatioFilter} implements a \code{_filter} method that takes a group and then passes each channel pair to a \code{_filter_one} method that actually performs the division to scale an image. All the implemented filters can be called in the provided \code{run_filters.py} script. 
 
 \section{Evaluator}
-
+To support consistent and convenient analysis, the \code{Evaluator} code in the \code{evaluate} module will compare a set of computer classified images to the gold standard annotated images. It will in turn generate confusion matrices and other performance metrics for analysis. It is accessible through the \code{run_evaluate.py} script. 
 
 
 \chapter{Experiments and Results} \label{ch:experiments}
