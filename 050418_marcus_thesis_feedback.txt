@@ -1,0 +1,39 @@
+- Sections 2 and 5
+Append Section 5 to Section 2
+"2 Background
+2.1 Solar Physics
+2.1.1 Space Weather Phenomenon
+2.1.2 Solar Structures
+2.2 Machine Learning
+2.2.1 Naive Bayes
+2.2.2 Random Forest
+2.2.3 Aritificial Neural Network (describe CNN in this subsection as well)"
+
+- Section 6
+"6 Software package" --> "6 Automatically Generating Thematic Maps" (or some other phrasing of the same idea; "software package" is too vague.)
+
+- Section 7
+Since more people are accepting of quantitative analysis, pushing Qualitative analysis back may be beneficial. Also, justify why this is necessary, just like how you start Section 7.1.2.
+
+Also, consider combining the other sections as Quantitative Analysis. It would flow better if you had a subsection on quantitative analysis and then qualitative analysis.
+
+Add a description on experiment setup (train test split? cv? This should be detailed enough to allow replication). Depending on the length, create a new subsection or locate it in Section 7.1.
+
+7.5
+features should be described in Section 6. Seciton 7 should only be about the experiment setup, results and analysis.
+
+- Section 9
+State the conclusion then future work
+
+
+Other comments
+p1
+"Jon Park" --> "Joonsuk Park"
+
+p8
+"Using a naive Bayesian ..."
+--> drop the names of the classifiers, and focus on the goal.
+E.g. "This thesis presents machine learning approaches to automatically generate thematic maps in real-time. In order to train these classifiers, we first constructed an annotated dataset using a custom-built visual annotation tool. The resulting dataset will be [contribution]. Using the dataset, we ..."
+
+p11
+State the goals as contributions.

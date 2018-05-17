@@ -15,7 +15,7 @@
 %% Rotate tables and figures
 \usepackage{rotating}
 %% Used for TODO items
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 %% used for code listings.
 \usepackage{float} 
 %% Used to replace LaTeX's ugly emptyset with diameter, which looks nicer.
@@ -64,6 +64,10 @@
 \newcommand{\todo}[1]{{\color{red}{\textbf{#1}}}}
 \newcommand{\code}[1]{\mintinline{python}|#1|}
 
+\newcolumntype{b}{>{\columncolor[HTML]{D0D1ED}} c}
+\newcolumntype{r}{>{\columncolor[HTML]{CCCCCC}} c} 
+\newcolumntype{n}{>{\columncolor[HTML]{FFFFFF}} c} 
+
 %\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
 %\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 %\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
@@ -91,7 +95,7 @@ Solar Thematic Map Generation via Machine Learning
 by\\
 J. Marcus Hughes\\
 \vskip.125in
-Professor Jon Park, Advisor\\
+Professor Joonsuk Park, Advisor\\
 \singlespacing
 \vskip.5in
 \small
@@ -113,10 +117,11 @@ Williamstown, Massachusetts\\
 \listoffigures
 \listoftables
 \onehalfspacing
-\chapter*{Abstract}
-The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R series satellites collect continuous, high-quality imagery of the Sun in six wavelengths. SUVI imagers produce at least one image every 10 seconds, or 8,640 images per day, considerably more data than observers can digest in real time. Over the projected 20-year lifetime of the four GOES-R series spacecraft, SUVI will provide critical imagery for space weather forecasters and produce an extensive but unwieldy archive. In order to condense the database into a dynamic and searchable form we have developed solar thematic maps, maps of the Sun with key features, such as coronal holes, flares, bright regions, quiet corona, and filaments, identified. Thematic maps will be used in NOAA’s Space Weather Prediction Center to improve forecaster response time to solar events and generate several derivative products. Likewise, scientists use thematic maps to find observations of interest more easily and guide experiments. 
 
-Using a naive Bayesian classifier, a random forest, and a neural network, we create thematic maps in real-time. We created software to collect expert classifications of solar features based on SUVI images. Using this software, we compiled a database of expert classifications. These are used to establish experimental limits on human performance. Given new images, the classifiers assign each pixel the most appropriate label according to the trained distribution. Here we describe the software to collect expert training and the successes and limitations of the classifier. These results are promising and encourage future research into an ensemble classification approach and solar weather prediction with similar methods.
+\chapter*{Abstract}
+The new Solar Ultraviolet Imager (SUVI) instruments aboard NOAA’s GOES-R series satellites collect continuous, high-quality imagery of the Sun in six wavelengths. SUVI imagers produce at least one image every 10 seconds, or 8,640 images per day, considerably more data than observers can digest in real time. Over the projected 20-year lifetime of the four GOES-R series spacecraft, SUVI will provide critical imagery for space weather forecasters and produce an extensive but unwieldy archive. In order to condense the database into a dynamic and searchable form I have developed solar thematic maps, maps of the Sun with key features, such as coronal holes, flares, bright regions, quiet corona, and filaments, identified. Thematic maps will be used in NOAA’s Space Weather Prediction Center to improve forecaster response time to solar events and generate several derivative products. Likewise, scientists use thematic maps to find observations of interest more easily and guide experiments. 
+
+This thesis presents machine learning approaches to automatically generate thematic maps in real-tie. In order to train these classifiers, I created software to collect expert classifications of solar features based on SUVI images. Using this software, I compiled a database of expert classifications, which will be made available for future use. These are used to establish experimental limits on human performance. Here, I describe the software to collect expert training and the successes and limitations of the classifier. These results are promising and encourage future research into an ensemble classification approach and solar weather prediction with similar methods.
 
 \chapter*{Acknowledgments}
 I'd like to thank Dan Seaton and Jon Darnel for guiding me during this project and supplying data and annotations.  I'd like to thank Jay Pasachoff for his support in solar physics and discovery of this project. And, I'd like to thank Jon Park for helping me organize and embark on an independent thesis. I'd like to thank all the aforementioned individuals again for reading the thesis and providing feedback as well as the rest of the Williams College computer science faculty. 
@@ -137,13 +142,13 @@ On March 13th, 1989, another geomagnetic storm, less than a third of the strengt
 
 There are many much more frequent but less devastating solar events, discussed in Section \ref{sec:space-weather-events} that can cause damage to power grids, satellites, Earth communications, astronauts, and many other sensitive systems. While they cannot be prevented, advanced warning allows for preparation that can mitigate the damage. Coronal mass ejections, one danger resulting when the Sun spews large amounts of charged material sometimes towards Earth, have been recorded to reach speeds of up to 2000 miles per hour, reaching Earth within the day \cite{fastcme}. Within minutes to hours of a solar flare, the ionospheric disturbance can interrupt radio communications \cite{swap}. For proper safety protocols to be enacted, fast warning of an event is necessary.  This thesis explores solar feature classification through modern machine learning approaches, specifically the creation of a computer vision systems utilizing satellite imagery to identify solar activity in real time for quick response. These classification systems allow for real-time warning of space weather events.
 
-\section{Goals}
+\section{Contributions}
 
-This thesis has several key goals as outlined here:
+This thesis has several key contributions as outlined here:
 \begin{itemize}
-\item There does not exist a curated database of human annotated solar images designed for solar machine learning representing multiple experts input. This thesis will present the first of its kind, comparing it to existing automated databases. In addition, this thesis will analyze the human labeling to understand agreement/disagreement between different annotators and consistency for each annotator. In order to create this database, the necessary labeling software will be created in this thesis.
-\item This thesis will provide a suite of modern machine learning approaches to solar image classification with a random forest, Bayesian, and neural network implementation. These will be compared to existing solar classification approaches as well as each other to characterize their strengths, weaknesses, and overall performance.
-\item Ultimately, high-quality solar image classification opens up avenues of research for solar physics. Thus, a prototype solar feature database will compiled from the images, indexing the images and allowing solar physicists to easily find interesting events. Further, a research application estimating the fractal dimension of active regions and properties of coronal hole will be presented.
+\item Prior to this work, there did not exist a curated database of human annotated solar images designed for solar machine learning representing multiple experts input. This thesis presents the first of its kind, comparing it to existing automated databases. In addition, this thesis analyzes the human labeling to understand agreement/disagreement between different annotators and consistency for each annotator. In order to create this database, the necessary labeling software was created and is described here
+\item This thesis provides a suite of modern machine learning approaches to solar image classification with a random forest, Bayesian, and neural network implementation. These are compared to existing solar classification approaches as well as each other to characterize their strengths, weaknesses, and overall performance.
+\item Ultimately, high-quality solar image classification opens up avenues of research for solar physics. Thus, a prototype solar feature database is compiled from the images, indexing the images and allowing solar physicists to easily find interesting events. Further, a research application estimating the fractal dimension of active regions and properties of coronal hole is presented.
 \end{itemize}
 
 \section{Organization}
@@ -251,7 +256,7 @@ Instead of growing regions, one can identify significant features by looking at 
 
 Other histogram based methods include Preminger et al.(2001) which used contrast ratios between ionized calcium and magnetograms to identify sunspots and faculae \cite{preminger}.
 
-\subsubsection{Hybrid}
+\subsubsection{Hybrid}\label{sec:hybridspoca}
 Some approaches bridge between region-based and edge-based techinques. One key example is Spatial Possibilistic Classification Algorithm (SPoCA), a fuzzy classifier that uses multiwavelength extreme ultraviolet observations to assign multiple classes: quiet Sun, active region, and coronal hole. SPoCA is more accurately a suite that implements three types of fuzzy clustering algorithms tailored to the segmentation of solar coronal EUV images: Fuzzy C-means (FCM),  Possibilistic C-means (PCM) algorithm, and Spatial Possibilistic Clustering Algorithm (SPoCA) \cite{verbeeck2014spoca}. It differentiates itself from other techniques because of its reliance on fuzzy logic. Barra et al. (2008) note that the use of fuzzy logic allows the algorithm to overcome noise in the images and the scientific definitions of solar features while meeting many needs. Often, unsupervised solar segmentation techniques are developed with a specific research question and thus are very restricted. For example, one classifier may focus only on the brightest cores of active regions to study energy transfer while another may be designed to catch active regions as they form and thus catch many weak active regions. SPoCA is generic enough to overcome this conflict.
 
 SPoCA works by utilizing the assumptions of fuzzy logic. Each pixel has membership in all of the different classes used in the thematic map. The sum of all the memberships for a pixel must be one, i.e. the pixel membership indicates how much the pixel matches that theme. In fuzzy c-means \cite{cmeans}, a generalization of K-means clustering to fuzzy logic, the variance within a cluster, all the pixels labeled a theme, is minimized. This approaches is very susceptible to the noise in astronomical images though \cite{krishnapuram1993possibilistic}. Thus, the fuzzy c-means requirement of membership summing to one is relaxed to form of possibilistic c-means \cite{krishnapuram1996possibilistic}. SPoCA is a further modification that incorporates weighting by spatial extent such that neighboring pixels should be assigned similar labels \cite{barra:2008, barra:2009}. 
@@ -263,17 +268,17 @@ There are other types of unsupervised classifiers that do not fit nicely into th
 \subsubsection{Example system: Solar Dynamics Observatory}
 Many unsupervised approaches that only deal with one class at a time can be chained together to create all the necessary data for a thematic map. The Solar Dynamics Observatory (SDO) satellite mission produces 1.5 TB of imagery per day in multiple ultraviolet wavelengths, a magnetogram, and other data channels. To deal with this influx of data, teams of researchers developed classifiers that identified specific classes of features \cite{sdo}. All of the component parts can be seen in Figures \ref{fig:sdo1} and \ref{fig:sdo2}.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=0.5]{sdo1.png}
+    \includegraphics[scale=0.4]{sdo1.png}
     \caption{{\bf First half of SDO classifiers} \cite{sdo}}
     \label{fig:sdo1}
  \end{center}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
-    \includegraphics[scale=0.5]{sdo2.png}
+    \includegraphics[scale=0.4]{sdo2.png}
     \caption{{\bf Second half of SDO classifiers} \cite{sdo}}
     \label{fig:sdo2}
  \end{center}
@@ -282,15 +287,16 @@ Many unsupervised approaches that only deal with one class at a time can be chai
 The SDO suite suite is a comprehensive approach to classification that utilizes all of the techniques mentioned thus far and more. For features that are beyond the individual classifiers' scope, a trainable module is employed. While this is a supervised system, it is mentioned here to emphasize the difference between supervised and unsupervised approaches. A user can identify a specific type of feature they are interested in by identifing them within an image. These are placed in feature vectors of 12 texture paramters (for example mean, entropy, uniformity). These train either a support vector machine or a C4.5 decision tree and will then identify similar features from the rest of the database \cite{lamb2008example}. The SDO suite lacks the ability to combine all the classifications into a single thematic map. 
 
 \subsubsection{Comparisons}
-\begin{figure}[ht]
+
+As shown in Figure \ref{fig:revathy}, different methods produce often similar but still different results. By computing the fractal dimension over the segmented image, they were able to characterize the difference between fuzzy clustering, region growing, iterative thresholding, and histogram thresholding. They found that depending on the height of the active region in the solar atmosphere it was segmented differently. In general, the fuzzy-based and histogram approaches outperformed the others. They propose that using longer wavelength ultraviolet images tends to larger area active regions.
+
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=1]{revathy.png}
     \caption{{\bf Performance of different methods}: Revathy, Lekshmi, \& Nayar (2005) compared the performance of different segmentation techniques in identifying active regions \cite{revathy}. At left is the result of a histogram thresholding approach while at the right is fuzzy-based segmentation. }
     \label{fig:revathy}
  \end{center}
 \end{figure}
-
-As shown in Figure \ref{fig:revathy}, different methods produce often similar but still different results. By computing the fractal dimension over the segmented image, they were able to characterize the difference between fuzzy clustering, region growing, iterative thresholding, and histogram thresholding. They found that depending on the height of the active region in the solar atmosphere it was segmented differently. In general, the fuzzy-based and histogram approaches outperformed the others. They propose that using longer wavelength ultraviolet images tends to larger area active regions.
 
 Caballero \& Aranda (2013) conducted an independent comparison of unsupervised techniques for active regions \cite{caballero}. Using 6000 images from SOHO in 195 angstroms, they initially segmented the images using region growing techinques. Then, the different independent regions were clustered together into units using either partition approaches or a hierarchial classification. They found that the hiearchial classification, the idea that nearby regions should be more strongly connected, produced more human-like clusters. However, this approach requires exponential time complexity and results in a hierarchy instead of a simple division into clusters.
 
@@ -327,7 +333,7 @@ Their results were promising with high accuracies and maps that generally cohere
 
 Rigler et al.(2012) built upon earlier work by de Wit (2006) who suggested the Bayesian approach \cite{dewit:2006}. After decreasing the noise and normalizing the intensity in each image, de Wit (2006) instead used only four ultraviolet wavelengths and projected them into a three-dimensional parameter space using singular-value decomposition \cite{dewit:2006}. Thus, de Wit (2006) ran a naive Bayesian classifier on these transformed parameters instead of the higher dimensional wavelengths. Figure \ref{fig:dewit} shows an example result by de Wit (2006), emphasizing the coherence of this segmentation without any forced smoothness \cite{dewit:2006}. This approach ran in near real-time, taking only a few minutes to classify every pixel. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=1]{dewit.png}
     \caption{{\bf de Wit Segmentation}: This figure indicates the power of quick, multi-spectral, supervised segmentation done by de Wit (2006), very similar to other work by Rigler et al.(2012) and De Visscher et al.(2015) \cite{dewit:2006}. The classes for this study are: ``(1) Tenuous corona outside of the disk, in regions with open magnetic-field lines.(2) Dense corona outside of the disk. (3) Coronal holes. (4) Quiet sun, including the chromospheric network and regions inside the network boundaries. (5) Active regions on the disk'' \cite{dewit:2006}. }
@@ -391,7 +397,7 @@ He, Gkioxari, Doll{\'{a}}r, \& Girschick developed Mask Regional Convolutional N
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.5]{mrcnn.png}
-    \caption{{\bf Mask regional convolutional neural networks}: The top row was the existing state-of-the-art instance segmentation \cite{li2016fully}, an example of a FCN, compared to the bottom row of Mask R-CNN performance on the same scene. The overlaid coloration indicates the segmentation while bounding boxes indicate where Mask R-CNN evaluated these masks. Clearlly, the Mask R-CNN produces more coherence classifications. In addition, it runs in less time with higher accuracy than the existing state-of-the-art systems and was consequently awarded the 2017 International Conference on Computer Vision best paper award.}
+    \caption{{\bf Mask regional convolutional neural networks}: The top row was the existing state-of-the-art instance segmentation \cite{li2016fully}, an example of a FCN, compared to the bottom row of Mask R-CNN performance on the same scene. The overlaid coloration indicates the segmentation while bounding boxes indicate where Mask R-CNN evaluated these masks. Clearlly, the Mask R-CNN produces more coherence classifications. In addition, it runs in less time with higher accuracy than the existing state-of-the-art systems and was consequently awarded the 2017 International Conference on Computer Vision best paper award. Figure from He et al. (2017) \cite{he:2017}.}
     \label{fig:mrcnn}
  \end{center}
 \end{figure}
@@ -414,17 +420,17 @@ SUVI observes in six different wavelength passbands (and their corresponding cor
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[scale=0.4]{suvi-wavelength-log.jpg}
-    \caption{{\bf Wavelengths}: This diagram indicates which SUVI wavelengths are most helpful in identifying different space weather events \cite{suviwebsite}.}
+    \caption{{\bf Wavelengths}: This diagram indicates which SUVI wavelengths are most helpful in identifying different space weather events. Figure from the SUVI website \cite{suviwebsite}.}
     \label{fig:suviwavelength}
  \end{center}
 \end{figure}
 
 However, these passbands overlap with other spectral lines that form at different temperatures than the predominant one listed above. This can cause potential confusion between channels during classification. The qualitatively apparent in the first-light images from SUVI in Figure \ref{fig:suviimages}.
 
-\begin{figure}[ht]
+\begin{figure}[hbt]
   \begin{center}
     \includegraphics[scale=0.8]{suvi-images.jpg}
-    \caption{{\bf Example SUVI images}: These first-light images taken on January 29, 2017 exemplify SUVI's response to different solar features in different passbands. For example, the large coronal hole (the darker boot-like shape in the lower portion of the Sun) has higher contrast from the background in 19.5 nm than 304 nm \cite{suviwebsite}.}
+    \caption{{\bf Example SUVI images}: These first-light imag-es taken on January 29, 2017 exemplify SUVI's response to different solar features in different passbands. For example, the large coronal hole (the darker boot-like shape in the lower portion of the Sun) has higher contrast from the background in 19.5 nm than 304 nm. Figure from the SUVI website \cite{suviwebsite}.}
     \label{fig:suviimages}
  \end{center}
 \end{figure}
@@ -463,7 +469,7 @@ I experimented with noise-gating and implemented it in Python, which I have made
 \subsection{H-alpha imagery} 
 As discussed in Section \ref{sec:halphainclusion}, it was impossible to differentiate between all labeled classes using only ultraviolet imagery. Thus, \halpha images, a narrow red passband at 656.28 nm caused by a hydrogen electron falling from the third energy level to the second, were included. They are particularly helpful in observing solar prominences and filaments. These images were gathered using the Virtual Solar Observatory \cite{vso}, an online compilation of images of the Sun from various sources, using SunPy \cite{sunpy, sunpyweb}, a Python toolkit for solar physics. In particular, \halpha images from the Global Oscillation Network Group (GONG) were used since they have continuous time coverage because of their seven globally distributed observing sites in Learmonth, Australia; Udaipur, India; El Teide, Spain; Cerro Tololo, Chile; Tuscon, Arizona, United States; Big Bear, California, United States; and Mauna Loa, Hawaii, United States. Each image is $2048\times2048$ pixels with each pixel being one arcsecond on a side. These are rescaled to SUVI using a linear transformation that scales the 1~arcsecond per pixel \halpha down to SUVI's plate scale of 2.5 arcseconds per pixel. The image was shifted so that the Sun remained centered.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.1]{example-halpha.jpg}
     \caption{{\bf Example \halpha image}: This image is a typical \halpha view of the Sun from the GONG network. A prominence is visible on the bottom right, and a dark filament is visible in the center of the center of the Sun.}
@@ -598,7 +604,6 @@ Upon startup, the software will look at its configuration file and determine how
 
 In a single static image, it is difficult to label all the features because they are on different spatial, brightness, and spectral scales. Pan and zoom tools were included to allow the user to easily navigate about an image. In the configure panel, the annotator can adjust the left, preview solar image. They can choose to either see an RGB image that combines three different passbands or look at a single passband in a greyscale image. If they select the RGB they can assign the colors to their desired passband as well as what scaling factor to use. The scaling factor is included because the brightness values between different passbands differ. Without the adjustable scaling factor, the brightest passband will always dominate and more subtle detail cannot be seen. A single color option is included because some features may only be definitively visible in one passband, for example filaments in \halpha. 
 
-
 \subsubsection{Iterated improvements}
 While this software is not complicated, it was not the first approach. In the very first approach, the image was automatically segmented into super-pixels using the Simple Linear Iterative Clustering (SLIC) segmentation algorithm \cite{SLIC}. Drawing boundaries is more time consuming than simply clicking an region of the image. SLIC was used in the hopes of producing more labeled images. However, it systematically over/under segmented specific classes, making their boundaries consistently too large or small, and did not consistently segment filaments. It instead lumped the structure into a larger superpixel with other classifications. 
 
@@ -610,7 +615,7 @@ Since this is the first digitally collected dataset of human solar annotations f
 
 Each annotator was asked to label each image group twice. They were not informed when they were relabeling but instead shown the images in a random order. This allows for a check on human self-consistency. If the task were trivial, then the annotators would be expected to have perfect consistency. However, this is not the case. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.1]{g20171015000202-0}
     \includegraphics[scale=0.35]{g20171015000202}
@@ -620,7 +625,7 @@ Each annotator was asked to label each image group twice. They were not informed
  \end{center}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[scale=0.1]{g20171102000206-0}
     \includegraphics[scale=0.35]{g20171102000206}
@@ -641,12 +646,12 @@ Cohen's kappa is defined as
   \hline    
 $\kappa$ range &  Agreement interpretation & \% of data that are reliable \\
 \hline \hline
-0-.20	& None &	0-4\% \\
-.21–.39	& Minimal &	4-15\% \\
-.40–.59 & Weak & 15-35\% \\
-.60–.79	& Moderate & 35-63\% \\
-.80–.90 & Strong &64-81\% \\
-$>.90$  & Almost Perfect	& 82-100\% \\
+0.00-0.20	& None &	0-4\% \\
+0.21-0.39	& Minimal &	4-15\% \\
+0.40-0.59 & Weak & 15-35\% \\
+0.60-0.79	& Moderate & 35-63\% \\
+0.80-0.90 & Strong &64-81\% \\
+$>0.90$  & Almost Perfect	& 82-100\% \\
 \hline
   \end{tabular}
   \caption{Interpretation of Cohen's kappa coefficient for agreement \cite{cohens}}
@@ -806,7 +811,7 @@ A third annotator submitted only a handful of images, however they provide an in
   \begin{center}
   	\includegraphics[scale=0.4]{casestudycomparison}
     \caption{{\bf An interesting case study from Group 13} For this group, Annotator A and Annotator B submitted double labeling and Annotator C also submitted a labeling. This group comes from 2017-09-08 during a solar flare. All labelings include the annotated flare in the bottom right of the image. However, there are many other differences discussed in Section \ref{sec:casestudy}.}
-    \label{fig:annotatordifference}
+    \label{fig:casestudy}
  \end{center}
 \end{figure}
 
@@ -860,7 +865,7 @@ Thus, the label that maximizes this probability is assigned for the reference pi
 No smoothing is done in this version as in Rigler et al. (2012) \cite{rigler:2012}. 
 
 \section{Random Forest}
-The random forest is an ensemble of decision tree classifiers and are used in a variety of Earth remote sensing applications \cite{puissant2014object, salas2016multispectral, clark2016mapping, kulkarni2017multispectral, lowe:2015}. Solar image segmentation is very similar to remote Earth sensing, just with a different subject matter and often fewer passbands. In this application, an ensemble of $D$ decision trees with maximum depth $Q$ are used to form the random forest \todo{change to optimal}. The empircally best depth and number is determined in Section \ref{sec:randomforesthyperparameter}. The random forest is given the same types of input as the maximum likelihood classifier: the EUV channels, the \halpha channel, and derived channels (spatial, line ratios). The random forest implementation in Scikit-Learn is used \cite{scikit-learn}. 
+The random forest is an ensemble of decision tree classifiers and are used in a variety of Earth remote sensing applications \cite{puissant2014object, salas2016multispectral, clark2016mapping, kulkarni2017multispectral, lowe:2015}. Solar image segmentation is very similar to remote Earth sensing, just with a different subject matter and often fewer passbands. In this application, an ensemble of 20 decision trees with maximum depth of 10 to form the random forest. The random forest is given the same types of input as the maximum likelihood classifier: the EUV channels, the \halpha channel, and derived channels (spatial, line ratios). The random forest implementation in Scikit-Learn is used \cite{scikit-learn}. 
 
 \begin{figure}[ht]
   \begin{center}
@@ -869,9 +874,9 @@ The random forest is an ensemble of decision tree classifiers and are used in a 
  \end{center}
 \end{figure}
 
-Another benefit of the random forest is its ability to indicate what features are most important for classification. This is briefly explored in Section \ref{sec:rforestfeatures}. 
+Another benefit of the random forest is its ability to indicate what features are most important for classification. 
 
-\section{Feed-forward Neural Network}
+\section{Artificial Neural network}
 An artificial neural network is a network of nodes and weights. The neural network takes inputs with a node for each input type. These inputs are transformed and passed onto layers of intermediate nodes. Each node has an activation function. The inputs are combined with different weights through a transfer function. The combined input is then compared via an activation function to an activation threshold. If the combined input is strong enough the node activates and passes a transformed value along to subsequent nodes in the next layer. These propogate forward to an output layer that provides the labeled class. 
 
 \begin{figure}[ht]
@@ -883,10 +888,9 @@ An artificial neural network is a network of nodes and weights. The neural netwo
 
 A simple fully-connected feed forward network is employed here consisting of three densely connected hidden layers with an input layer with similar neighborhood inputs and an output layer for classes. The hidden layers had 16, 16, and 8 nodes each with relu activation. 
 
-\section{Convolutional Neural Network}
 A convolutional neural network was attempted with the expectation of poor results because of insufficient training. The system was based on the Fully Convolutional Neural Network appraoch by Long, Shelhamer, \& Darrell (2015) \cite{fcnn}, a method to take arbitrarily sized image input and create similarly sized image output with classification labels. The specific implementation used was a modification of Sarath Shekkizar's Tensorflow implementation \cite{fcnntensorflow}. This approach was intialized with VGG-16 pretrained model, although it is unclear if this training helps for solar image segmentation as well.
 
-\chapter{Software package} 
+\chapter{Software for automatically generating theamatic maps} 
 
 This chapter details how the software is designed and how future features can be included. The codebase is available at the \href{https://github.com/jmbhughes/smachy}{author's Github}. 
 
@@ -958,21 +962,12 @@ To support consistent and convenient analysis, the \code{Evaluator} code in the 
 
 This chapter describes various experiments performed on the data and the conclusions derived while working toward the optimal machine learning solar image classifier, most importantly it explores feature selection. It begins by introducing the methods of evaluation in Section \ref{sec:evaluationmethods} and then proceeds through the experiments. 
 
+The database of annotated images was broken into two categories: a training set and a testing set. Fourteen images were used in training and thirteen were used for testing. These were randomly selected so that no observational time was biased. The classifiers in the experiments are trained solely on the images in the training set and only exposed to the testing set for evaluation.
+
 \section{Evaluation approaches}\label{sec:evaluationmethods}
-The database of annotated images was broken into two categories: a training set and a testing set. Fourteen images were used in training and thirteen were used for testing. These were randomly selected so that no observational time was biased. The classifiers in the experiments are trained solely on the images in the training set and only exposed to the testing set for evaluation. 
 
-\subsection{Qualitative}
-For each experiment, the generated thematic maps from the trained classifiers are qualitatively compared to the testing images. Several qualities are inspected:
-\begin{itemize}
-\item Are all classes expected in this image present? If not, what classes are missing or overly present?
-\item How do the boundaries of each region compare to the testing image? 
-\item Is the classification noisy with neighboring pixels varying? 
-\item Is the limb correctly aligned? 
-\item Are there any other pecuiliarities? 
-\end{itemize}
-
-\subsection{Standard machine learning metrics}
-In addition to qualitative inspection, the testing set and classifier generated results are compared quantitatively. For each class several several statistics are calculated based on true positive count (TP), true negative count (TN), false positive count (FP), and false negative count (FN). For a given clas label, TP is the number of pixels classified with that class and the gold standard database agreed. On the other hand, FP is the number of pixels classified with that class when the gold standard database disagreed. Similarly, TN is number of times the classifier correctly did not assign the class and FN is when the classifier labeled a class other than the designated class. From these values, several metrics of performance are derived. One of the more widely known metrics is accuracy, how often a classifier is correct:
+\subsection{Quantitative}
+The testing set and classifier generated results are compared quantitatively. For each class several several statistics are calculated based on true positive count (TP), true negative count (TN), false positive count (FP), and false negative count (FN). For a given clas label, TP is the number of pixels classified with that class and the gold standard database agreed. On the other hand, FP is the number of pixels classified with that class when the gold standard database disagreed. Similarly, TN is number of times the classifier correctly did not assign the class and FN is when the classifier labeled a class other than the designated class. From these values, several metrics of performance are derived. One of the more widely known metrics is accuracy, how often a classifier is correct:
 \[\text{accuracy} = \frac{TP + TN}{TP + TN + FP + FN}\] However, accuracy is not as helpful when classes are skewed, for example flares are very uncommon so never using the label of flare trivially optimizes accuracy. Other metrics are more revealing in this case. Precision is defined as:
 \[ \text{precision} = \frac{TP}{TP + FP} \]
 It measures the ability of the classifier to not label a pixel the given class when it is not. Recall is another metric that characterizes the classifier's ability to identify all pixels of a given class:
@@ -980,8 +975,6 @@ It measures the ability of the classifier to not label a pixel the given class w
 Both precision and recall are important but are often anti-correlated. The f1 score combines them:
 \[\text{f1} = \frac{2 \times \text{precision} \times \text{recall}}{\text{precision} + \text{recall}}\]
 
-
-\subsection{Confusion matrix}
 The aforementioned metrics do not indicate exactly how the classifier fails. For example, the accuracy for coronal holes mmight be low, but it isn't clear what the coronal pixels are being classified as instead. A confusion matrix like the xample in Figure \ref{fig:exampleconfusionmatrix} helps remedy this.
 
 \begin{figure}[ht]
@@ -994,62 +987,81 @@ The aforementioned metrics do not indicate exactly how the classifier fails. For
 
 The confusion matrices in this thesis are presented normalized such that each row should sum to 100 ($\pm 1$ for rounding). Confusion matrices might typically be presented as raw counts, but it is not beneficial in this case since some classes greatly outnumber others. So, in this matrix, prominences are correctly labeled for 5\% of prominence pixels in the gold standard database. They are often labeled as limb instead, 74\% of the time and sometimes as empty outer space 16\%. This is not too unexpected since prominences are on the limb. While the columns cannot be summed, they do provide some insight. For example, the predicted label of limb comes from prominence and limb. It is important to note that limb is correctly classified 81\% of the time, so the 74\% between prominence and limb should not be interpreted to mean limb is equally likely to be labeled as prominence and limb. 
 
+\subsection{Qualitative}
+However, quantitative metrics do not fully capture the subtleties of analysis. It does not provide clear insight into why problems occur. Thus for each experiment, the generated thematic maps from the trained classifiers are qualitatively compared to the testing images. Several qualities are inspected:
+\begin{itemize}
+\item Are all classes expected in this image present? If not, what classes are missing or overly present?
+\item How do the boundaries of each region compare to the testing image? 
+\item Is the classification noisy with neighboring pixels varying? 
+\item Is the limb correctly aligned? 
+\item Are there any other pecuiliarities? 
+\end{itemize}
 
 \section{Baseline results}
 To provide a baseline, the classifiers were first run with a neighborhood size of 0 meaning that classification only looked at a pixel at a time using only the EUV imagery from SUVI. For each classifier, a typical example of the classification is shown:
 
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[scale=0.8]{baseline}
+    \caption{{\bf Baseline performance for single pixel classfiers}: Each classifier is labeled and compared to the human expert gold standard.}
+    \label{fig:baseline}
+ \end{center}
+\end{figure}
+
+As shown in Figure \ref{fig:baseline}, the Bayesian classifier created a very noisy result with pixels even in outer space being misclassified. The distribution for structured outer space and unstructured outer space are very similar: nearly completely empty in every channel. Brightness will decline radially from the center of the solar disk. In the training data set, the only example of structured outer space was at a far distance from the solar disk and thus darker. Since this classifier does not see beyond a single pixel, the structure is relatively unimportant compared to the darkness. The radial brightness dependence is repeated for prominences. Coronal holes and filaments are severely overestimated. However, this classifier does not appear to have confused coronal hole and filaments and applied the correct one in each setting generally. However, it struggled to differentiate between coronal hole/filament and quiet Sun.  
+
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.2]{base_rf}
-    \includegraphics[scale=0.2]{base_rf_gold}
-    \caption{{\bf Baseline performance for Bayesian classifier}}
-    \label{fig:base-bayesian}
+    \includegraphics[scale=0.8]{base_bayesian_conf}
+    \caption{{\bf Baseline Bayesian confusion matrix}}
+    \label{fig:base-bay-conf}
  \end{center}
 \end{figure}
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.2]{base_rf}
-    \includegraphics[scale=0.2]{base_rf_gold}
-    \caption{{\bf Baseline performance for random forest}}
-    \label{fig:base-rf}
+    \includegraphics[scale=0.8]{base_rf_conf}
+    \caption{{\bf Baseline random forest confusion matrix}}
+    \label{fig:base-rf-conf}
  \end{center}
 \end{figure}
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.2]{base_rf}
-    \includegraphics[scale=0.2]{base_rf_gold}
-    \caption{{\bf Baseline performance for neural network}}
-    \label{fig:base-nn}
+    \includegraphics[scale=0.8]{base_nn_conf}
+    \caption{{\bf Baseline neural network confusion matrix}}
+    \label{fig:base-nn-conf}
  \end{center}
 \end{figure}
 
-As shown in Figure \ref{fig:base-bayesian}, the Bayesian classifier created a very noisy result with pixels even in outer space being misclassified. The baseline random forest classifier failed to identify large filaments on the disk of the Sun that were clearly identified in all training sets. However, it did a reasonable job with coronal holes and identified more structure in bright regions than human annotators recorded. The neural network was very similar to random forest results. 
+The baseline random forest classifier failed to identify large filaments on the disk of the Sun that were clearly identified in all training sets. However, it did a reasonable job with coronal holes and identified more structure in bright regions than human annotators recorded. Upon follow-up it outperforms humans in this regard. The human annotator drew a quick boundary that was smooth and does not capture the complexity of bright regions. The neural network was very similar to random forest results. However, the random forest failed to identify flares while the neural network was successful. 
 
 \begin{table}[ht!]
 \centering
- \begin{tabular}{|c | c c c|} 
+ \begin{tabular}{|c | b r n | b r n | b r n | b r n|} 
  \hline
- Class & Bayesian & Random Forest & Neural network\\
-   \hline\hline
-Empty outer space & & &  \\
-Structured outer space & & & \\
-Bright region & & &\\
-Filament & & & \\
-Prominence & & &  \\
-Coronal Hole & & &  \\
-Quiet Sun & & & \\
-Limb & & &  \\
-Flare & & &  \\
+ & \multicolumn{3}{c|}{\textbf{Accuracy}} &  \multicolumn{3}{|c|}{\textbf{Precision}} & \multicolumn{3}{|c|}{\textbf{Recall}} & \multicolumn{3}{|c|}{\textbf{f1}} \\
+ & B & R & N & B & R & N & B &  R & N & B & R & N  \\
+   \hline 
+Empty outer space & 39 & 99 & 99 & 100 & 99 & 99 & 14 & 99 & 99 & 24 & 99 & 99 \\
+Structured outer space & 42 & 99 & 99 & 0 & N/A & N/A & N/A & 0 & 0 & N/A & N/A & N/A\\
+Bright region & 98 & 99 & 99 & 55 & 66 & 55 & 47 & 47 & 49 & 51 & 55 & 56\\
+Filament & 91 & 99 & 99 & 3 & 0 & 0 & 64 & 0 & N/A & 6 & N/A & N/A\\
+Prominence & 96 & 99 & 99 &  2 &  57 & 19 & 61 & 4 & 0 & 4 & 8 & 1\\
+Coronal Hole & 93 & 98 & 98 & 18 & 85  & 81 & 83 & 53  & 60 & 30 & 65 & 69 \\
+Quiet Sun & 84 & 97 & 97  &  93 & 90 & 92 & 39 & 97 & 95 & 55 & 93 & 93 \\
+Limb & 97 & 98 & 98 & 64 & 70 & 64 & 52 & 72 & 80 & 57 & 71 & 71  \\
+Flare & 99 & 0 & 100 & 0 & 0 & N/A  & N/A & N/A & N/A & N/A & N/A & N/A \\ 
  \hline
  \end{tabular}
- \caption{Baseline performance: When given only a single pixel view and EUV channels, here is the performance for each classifier..}
+ \caption{Baseline performance: When given only a single pixel view and EUV channels, here is the performance for each classifier.}
  \label{tab:baselinemetric}
 \end{table}
 
+\newpage
+
 \section{Normalization of data}
-Since each EUV channel is not equally bright, the Bayesian classifier may be skewed. The high values in one channel can effectively wash out subtle value differences in another potentially. Thus, the EUV channels were replaced with their normalized counterparts. Normalization was done to the disk of the Sun by first calculating where the disk of the Sun should be in each image. The solar disk location was determined by using orbital information instead of edge detection. For each class, the median pixel value on the disk was calculated over all images and designated the normalization coefficient. Each channel must be normalize to the same value over all images or else when comparing an image without a flare/bright region to one with the actual pixel value loses context. Without consistent coefficients, a pixel of medium value in the flare image would be many times brighter than a pixel of the same value in the unflared image. The calculated coefficients are in Table \ref{tab:normcoefficients}. 
+Since each EUV channel is not equally bright, the Bayesian classifier may be skewed. (This exploration was prompted by discussion with solar physics experts at NOAA.) The high values in one channel can effectively wash out subtle value differences in another potentially. Thus, the EUV channels were replaced with their normalized counterparts. Normalization was done to the disk of the Sun by first calculating where the disk of the Sun should be in each image. The solar disk location was determined by using orbital information instead of edge detection. For each class, the median pixel value on the disk was calculated over all images and designated the normalization coefficient. Each channel must be normalize to the same value over all images or else when comparing an image without a flare/bright region to one with the actual pixel value loses context. Without consistent coefficients, a pixel of medium value in the flare image would be many times brighter than a pixel of the same value in the unflared image. The calculated coefficients are in Table \ref{tab:normcoefficients}. 
 
 \begin{table}[ht!]
 \centering
@@ -1070,62 +1082,137 @@ Since each EUV channel is not equally bright, the Bayesian classifier may be ske
  \label{tab:normcoefficients}
 \end{table}
 
+However,this does not improve the performance of the Bayesian classifier as seen in Figure \ref{fig:normbayes}. 
 
-\section{Line ratios}
+\begin{figure}
+  \begin{center}[H]
+    \includegraphics[scale=0.6]{normcomp}
+    \caption{{\bf Normalized performance for classifiers}: Each classifier is labeled and compared to the human expert gold standard.}
+    \label{fig:normbayes}
+ \end{center}
+\end{figure}
 
-\section{Spatial features}
-\todo{copy from notes}
+The performance of the other classifiers was similarly unchanged. Thus, normalization is omitted. 
+
+\newpage
 
 \section{\halpha inclusion}\label{sec:halphainclusion}
-As seen in Figure \ref{fig:halphamotivation}, filaments and coronal holes cannot be differentiated using spectral information in the EUV channels of SUVI. Spatial approaches may discern between them because filaments are long, skinny strands while coronal holes are typically more round and extended. Alternatively, \halpha spectral information easily differentiates between coronal holes and filaments as shown in Figure \ref{fig:halphause}. 
+As seen in Figure \ref{fig:halphamotivation}, filaments and coronal holes cannot be differentiated using spectral information in the EUV channels of SUVI. Spatial approaches may discern between them because filaments are long, skinny strands while coronal holes are typically more round and extended. 
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.8]{placeholder.jpg}
-    \caption{{\bf Degeneracy of filament and coronal hole spectrally with EUV images} This histogram compares 19.5 nm pixel values for coronal holes, top, and filaments, bottom. They nearly overlap completely making it difficult for classification methods to key on sufficient themes for classification. All other EUV channels suffered from complete overlap. \halpha images differentiate filaments and coronal holes as shown in Figure \ref{fig:halphause}.} 
+    \includegraphics[scale=0.8]{degeneracy}
+    \caption{{\bf Degeneracy of filament and coronal hole spectrally with EUV images} This histogram compares 19.5 nm pixel values for filaments and coronal holes. They nearly overlap completely making it difficult for classification methods to key on sufficient themes for classification. All other EUV channels suffered from complete overlap. \halpha images differentiate filaments and coronal holes as shown in Figure \ref{fig:halphause}.} 
     \label{fig:halphamotivation}
  \end{center}
 \end{figure}
 
+
+Alternatively, \halpha spectral information easily differentiates between coronal holes and filaments as shown in Figure \ref{fig:halphause}. 
+
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.8]{placeholder.jpg}
-    \caption{{\bf Coronal hole and filament in \halpha} In \halpha images, filaments are dark strand structures while coronal holes have no apparent signature. This defining difference complements the degneracy in EUV images and boosts classifier performance.}
+    \includegraphics[scale=0.3]{halphacomp1}
+    \includegraphics[scale=0.315]{halphacomp2}
+    \caption{{\bf Coronal hole and filament in \halpha} In \halpha images like the one at right, filaments are dark strand structures while coronal holes (dark regions in the EUV image at left) have no apparent signature. This defining difference complements the degneracy in EUV images and boosts classifier performance.}
     \label{fig:halphause}
  \end{center}
 \end{figure}
 
-In this experiment, the suite of classifiers are first trained with only EUV channels. Then, they are trained with both EUV and \halpha channels. As shown in Figure \ref{fig:halpharesult} the \todo{insert results discussion here}. 
+In this experiment, the suite of classifiers is trained with both EUV and \halpha channels. The random forest classifier performs twice as well on prominences compared to the baseline. The neural network has an f1 measure of 13\% for prominences compared to 1\% in the baseline. The precision is now 75\% compared to 19\% in the baseline. 
+
+The Bayesian classifier does not improve for reasons mentioned already. However, the random forest and neural network performance changes much more. Figure \ref{fig:rfhalphaimprove} shows that the random forest classifier now identifies prominences. Prominences are caused by the same phenomenon as filaments but are off the solar disk. Thus, they have higher contrast in EUV images. Unfortunately, the filaments did not resolve just by adding \halpha. This is likely due to confusion in the training database. Upon closer inspection, there are instances when annotators identify filaments without \halpha being present. This adds even more complication to the definition of a filament. 
+
 
 \begin{figure}[ht]
   \begin{center}
-    \includegraphics[scale=0.8]{placeholder.jpg}
-    \caption{{\bf \halpha inclusion experiment results}. \todo{add relevant caption based on results}}
-    \label{fig:halpharesult}
+    \includegraphics[scale=0.6]{halphaimprove}
+    \caption{{\bf \halpha inclusion performance} At bottom left is the performance of the random forest classifier with a single pixel neighborhood with only the EUV channels. This looks very similar to the performance on the bottom right from the random forest including \halpha with the EUV. However, prominences are correctly labeled. They both lack identified filaments in the gold standard image at right. The neural network classifier loses the ability to define classes clearly.}
+    \label{fig:rfhalphaimprove}
  \end{center}
 \end{figure}
 
-\section{Hyperparameter selection}
+Interestingly, the neural network performance degraded considerably by adding the \halpha channel as seen in Figure \ref{fig:rfhalphaimprove}. The entire disk is now consistently classified as quiet Sun. Filaments are still rather faint in \halpha but the rest of the solar disk is nearly constant. This constant appearance is more strongly weighted in the feed forward neural network than desired and overwhelms any other classification. With extensive tweaking, the peformance could likely be corrected and allow for comparable performance to the random forest. However, this was not pursued. 
 
-\subsection{Random forest} \label{sec:randomforesthyperparameter}
+\newpage 
 
-\subsection{Neural network} \label{sec:neuralnetworkhyperparameter}
+\section{Line ratios}
+Line ratios can be used as a proxy for temperature in the solar images. It is often more helpful to look at how bright different features are relative to another line because it provides context for the observation. Thus, the ratio between every passband was included as a feature. Some of these ratios may not be all that helpful and pollute the feature set and warrant further investigation of all possible subsets for optimal performance. 
 
-\section{Random forest feature importance} \label{sec:rforestfeatures}
+With the line ratios, the number of features grows very large. To determine if the 
 
-\section{Comparison to existing classifiers}
+\newpage
+
+\section{Spatial features}
+In an attempt to incorporate, spatial information into a pixel-by-pixel classifier several spatial filters were used as input features. First, the distance from solar center was used. Since the Sun should be centered in each image after preparation in the earlier data processing stage, a simple estimate of the distance for pixel $(i,j)$ is $\sqrt{i^2 + j^2}$. This is pertinent because some features, such as prominences, will only appear at specific solar radii while others, such as flares, are distributed across the entire solar disk. I also investigated adding a spatial feature based on the image entropy. However, both proved unsuccessful in the small dataset since it made every classification unique. 
+
+\section{Summary} 
+Each classifier has different strengths and weaknesses. The Bayesian approach is easy to understand and provides insight into its classification approach with archetypal pixels. However, it is much slower to run because for each pixel there are more than $1280 \times 1280$ matrix multiplications, becoming even more costly as the number of features in the matrix increases. On my laptop, it takes minutes to classify a single image. Runtime is an issue in real-time execution but can be easily overcome with multi-core execution on larger, faster computers. The random forest is very fast in execution but can easily become over-trained. It also provides insight into classification methods. The neural network is a step toward deep learning and can be computed quickly but veils the classification approach because it is difficult to interpret the significance of specific weights. 
 
 \chapter{Applications} \label{ch:application}
 Solar image segmentation is helpful for space weather forecasting but is not the end goal for research. Solar physicists can utilize it as a tool in research applications. To aid in finding relevant data, a database of observations with key statistical features can be compiled from thematic maps as described in \ref{sec:database}. Alternatively, the segmentation can be used directly as a boundary as illustrated in an exploration of fractal dimension and class properties in Section \ref{sec:fractal}. 
 
 \section{Database building} \label{sec:database}
-\todo{copy from notes}
+Ultimately when running continuously in real time, a thematic map will be generated approximately every five minutes resulting in 288 images each day or 2,102,400 over twenty years. While more manageable than the full dataset, it still is tedious to search the images for specific phenomena because thematic maps only encode labels and not statistical distributions for observed values over an image. Thus, I developed a running database. When a new thematic map is generated, an entry is added for each label class as well as each contiguous solar feature. A contiguous solar feature is defined as a region on an image given the same label, for example each coronal hole in an image is a separate contiguous feature. A given pixel at index $(i,j)$ is a vector of values in each EUV channel, for example $x_{ij} = \begin{pmatrix}2 &  3 & 4 & 1 & 6 & 8 \end{pmatrix}$. Thus, the pixel set $X$ with $N$ entries is the set of pixels associated with that entry. Let $x[k]$ denote the $k$-th entry in $x$, for example $x[1] = 2$ and $x[2] = 3$. Each entry includes the following features:
+\begin{itemize}
+\item \textbf{mean location horizontally}: the average of the pixel horizontal indices in the entry's pixel set, $\frac{1}{N} \sum_{x_{ij} \in X} i$
+\item \textbf{mean location vertically}: the average of the pixel vertical indices in the entry's pixel set, $\frac{1}{N} \sum_{x_{ij} \in X} j$
+\item \textbf{number of pixels in entry}: the size of the entry's pixel set, $N$
+\item \textbf{width}: the difference between the largest horizontal pixel index and the smallest horizontal pixel index, $\max \{i | x_{ij} \in X\} - \min\{i | x_{ij} \in X\}$
+\item \textbf{height}: the difference between the largest vertical pixel index and the smallest vertical pixel index,  $\max \{j | x_{ij} \in X\} - \min\{j | x_{ij} \in X\}$
+\item \textbf{average brightness in each channel}: for each EUV passband, the average brightness over the pixel set, for the $k$-th channel $\frac{1}{N} \sum_{x_{ij} \in X} x_{ij}[k]$
+\item \textbf{maximum brightness in each channel}: for each EUV passband, the maximum brightness over the pixel set, for the $k$-th channel $\max \{x_{ij}[k] | x_{ij} \in X\}$
+\item \textbf{minimum brightness in each channel}: for each EUV passband, the minimum brightness over the pixel set, for the $k$-th channel $\min \{x_{ij}[k] | x_{ij} \in X\}$
+\item \textbf{standard deviation of brightness in each channel}: for the $k$-th channel defined as $\sqrt{\frac{1}{N-1} \sum_{x_{ij} \in X} \left(x_{ij}[k] - \overline{x_{ij}[k]} \right)^2 }$ where $\overline{x_{ij}[k]}$ is the average brightness of the pixels in that passband
+\item \textbf{25-percentile of brightness in each channel}: the brightness that 75\% of the entry's pixels are greater than in that passband
+\item \textbf{75-percentile of brightness in each channel}: the brightness that 25\% of the entry's pixels are greater than in that passband
+\item \textbf{assigned label}: the label given that entry, for example coronal hole
+\item \textbf{time}: the time of observation for that image group
+\end{itemize}
+
+More metrics could be added to this list as desired to make identifying interesting images easy. The database can also be used to study trends over time, between entry values, or the distribution of an entry value.
+
+This database can serve as a sanity check that the classification approach is working. In addition, a myriad of simple results like those in Figures \ref{fig:coronal_hole_area} and \ref{fig:coronal_hole_brightness} can be extracted.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.6]{coronal_hole_area}
+    \caption{{\bf Coronal hole area} This histogram shows the number of pixels in coronal holes in the databaase. There are coronal holes with more than 3000 pixels, but they are much rarer and not shown so detail can be extracted.}
+    \label{fig:coronal_hole_area}
+ \end{center}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[scale=0.6]{coronal_hole_brightness}
+    \caption{{\bf Coronal hole brightness} It may be interesting to look at the average brightness of a coronal hole in various passbands, potentially useful for clustering types of coronal holes. This is immediately accessible from the database. }
+    \label{fig:coronal_hole_brightness}
+ \end{center}
+\end{figure}
 
 \section{Fractal dimension and class properties} \label{sec:fractal}
-\todo{copy from fractals paper}
+Natural objects with complexity often possess self-similarity that Mandelbrot (1983) realized corresponded to a fractional dimension measure \cite{mandelbrot}. Fractals can arise from turbulent and chaotic systems and their existence can be used to understand the dynamics \cite{fractalchaos}. Solar magnetic activity is modelled by a dynamic, chaotic system \cite{lawrence+1995}. McAteer et al. (2015) utilized magnetograms from the SOHO mission to compare the fractal dimension of active regions to their classification and flare rate and found that the dimension was invariant under classification \cite{mcateer+2005}. They found that an active region appears to need a fractal dimension of at least 1.2 to produce M-class flares or stronger \cite{mcateer+2005}.  Aschwanden and Aschwanden (2008) found that flares in their sample, including a strong M-class flare, had fractal dimensions ranging from 1.0 to 1.89 \cite{aschwandensquared}. The difference between the lower threshold could stem from different methodology. On the other hand Georguilis (2012) argued that fractal dimension is insufficiently differentiating to determine if an active region will flare or not \cite{Georgoulis2012}. Finally, Rajkumar et al. (2017) examined sunspots, the white light counterpart to active regions, and found the umbra to have a fractal dimension of $2.09 \pm 0.42$ while the penumbra $1.72 \pm 0.4$ \cite{Rajkumar2017}. More study is needed to rectify these disagreements. 
 
-\chapter{Conclusion} \label{ch:conclusion}
+The solar image segmentation presented here provides a tool to assist with that study. As performance improve, the classification of regions can automatically be trusted. Thus, active regions and coronal holes, both possessing complex boundaries, can automatically be studied for large datasets. For example, Figure \ref{fig:boundaries} presents automatically determined boundaries for an active region and coronal hole. The same approach was used in both cases, so I will present the active region method. The classified thematic maps were converting to binary masks, 1 for where an active region was classified and 0 for anything else. Using morphological erosion and dilation, the boundary was extracted as the the difference between the dilation and erosion. These regions have complex boundaries. As the performance of the classifier increases, these boundaries will become more reliable. 
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[scale=0.4]{active_region_boundary}
+    \includegraphics[scale=0.4]{coronal_hole_boundary}
+    \caption{{Boundary of active region and coronal holes}: At left is the boundary of an active region and at right a coronal hole. Both were identified with the classifiers presented in this thesis.} 
+    \label{fig:boundaries}
+ \end{center}
+\end{figure}
+
+There are several definitions of dimension when discussing fractals. The topological dimension is the standard dimension taught in elementary schools and must always be a natural number. Formally, a set $A$ has topological dimension 0 if every point has a neighborhood, an open set around it, of arbitrarily small length where the boundary of $A$ misses $A$, $\text{bd} A \cap A = \emptyset$. Higher topological dimension can be defined recursively. For example, a set $A$ has topological dimension 1 if it is not topological dimension 0 and every point in $A$ has an arbitrarily small neighborhood whose boundary meets $A$ in a set of topological dimension 0. This dimension does not characterize the rough boundaries of many natural features. The Hausdorff dimension is a common dimension utilized, but is more techincal and not used here. In practice, the Minkowski or box-counting dimension is used. For a compact set $A$, in the real plane as these images are a set is compact if it bounded and closed, let $\epsilon > 0$. Then, $N(\epsilon)$ is the least number of boxes of size $\epsilon$ required to cover $A$. For images, this can be thought of as dividing the image into pixel boxes. So a box of size 4 would be 2 pixels on each side. In theory, $\epsilon$ can take any value but in practice only powers of two are used here. Then, $N(\epsilon)$ is the number of those pixel blocks needed to insure the entire edge shown in Figure \ref{fig:boundaries} is within some box. Thus, the Minkowski dimension is defined as $\lim_{\epsilon \to 0} - \frac{\log N(\epsilon)}{\log \epsilon}$. Since a limit is not feasible in this context, it is approximated by the slope of a linear regression between $\epsilon$ and $N(\epsilon)$. 
+
+Using the box-counting algorithm, the Minkowski dimension can be approximated. For active regions, the regions in this sample had average boundary Minkowski dimension of 1.05 with a standard deviation of 0.12. The coronal holes had an average Minkowski dimension of 1.26 with a standard deviation of 0.06. These values are very preliminary as they come from an imperfect boundary detection method and do not correct for perspective distortion. As coronal holes or active regions approach the limb, they smear out. For a very accurate fractal dimesion, features either need to be from the center of the solar disk or corrected for this distortion.
+
+\chapter{Conclusions} \label{ch:conclusion}
 This chapter provides an overview of potential future work and research questions as well as a summary of the results.  
+
+\section{Summary}
+Ultimately, this project has established a baseline for a publicly available database of expert annotated solar images for machine learning. There are concerns regarding the consistency of labeling of annotators as well as agreement between annotators. This plagued the results and led to a consistency checked database. It was difficult to determine how effective various features were in aiding classification because of the inconsistency and the relatively small database. However, \halpha does seem to improve prominence classification despite filaments being limited by dataset inconsistency. The other features explored had limited improvement.
 
 \section{Future work}
 There are many avenues for future inquiry stemming from this project. A few are presented here. 
@@ -1151,8 +1238,8 @@ In the meantime, a more realistic goal is for forecasters to make a daily drawin
 \subsection{Prediction}
 Potentially the most interesting and beneficial avenue for development is transitioning the classification paradigm to a prediction paradigm. There are many systems that predict solar flares within one to two days with fair success with machine learning techniques such as Bayesian methods \cite{predict1} and support vector machines \cite{predict2}. However, these systems are still far from satisfactory: "To date, various systems and models designed to predict the occurrence of solar flares have made significant progress, but the achieved prediction performances are far from what is required by operations teams" \cite{predict3}. Attempts at using CNNs have not been as successful, potentially because of insufficient data \cite{predict4}. However, that model is based off of sunspot counts instead of imagery. Using the approaches presented here with an added time domain and solar flare prediction label could be very productive. The annnotated data set in this thesis was too sparse for an investigation into prediction. 
 
-\section{Summary}
-
+\subsection{Machine learning with inconsistent database}
+If further annotated images confirm the inconsistency observed here, a new approach will be necessary to rectify the inconsistent database issue. Sleeman et al. (2012) developed a protocol to increase consensus among experts in expert knowledgebases \cite{sleeman}. Furthering this work and developing a more robust classifier would have ramifications outside of solar image segmentation while improving performance. 
 
 %%%%%%%%References %%%%%%%%%%
 \bibliographystyle{acm}
